@@ -1,0 +1,55 @@
+<html>
+<head>
+    <style>
+        #messages {
+            text-align: left;
+            width: 50%;
+            padding: 1em;
+            border: 1px solid black;
+        }
+    </style>
+    <title>Sample WebSocket Client</title>
+</head>
+<body>
+<div class="container">
+<h1>News Ticker</h1>
+    <div id="messages" class="messages"></div>
+</div>
+</body>
+<script>
+    const messageWindow = document.getElementById("messages");
+ 
+    const socket = new WebSocket("ws://localhost:8081");
+    socket.binaryType = "arraybuffer";
+ 
+    socket.onopen = function (event) {
+        addMessageToWindow("Connected");
+    };
+ 
+    socket.onmessage = function (event) {
+       addMessageToWindow(`${event.data}`);
+    };
+ 
+    sendButton.onclick = function (event) {
+        sendMessage(messageInput.value);
+        messageInput.value = "";
+    };
+ 
+    sendImageButton.onclick = function (event) {
+        let file = fileInput.files[0];
+        sendMessage(file);
+        fileInput.value = null;
+    };
+ 
+    function sendMessage(message) {
+        socket.send(message);
+        addMessageToWindow("Sent Message: " + message);
+    }
+ 
+    function addMessageToWindow(message) {
+        messageWindow.innerHTML += `<div>${message}</div>`
+    }
+ 
+</script>
+</html>
+ 
