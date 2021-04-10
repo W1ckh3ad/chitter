@@ -1,36 +1,22 @@
 package de.fhdw.chitter.models;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 public class NewsMessage {
     private String date;
     private String author;
-    private List<NewsMessageTopic> topics;
+    private NewsMessageTopics topics;
     private String headline;
     private String text;
 
-    public static List<NewsMessageTopic> readTopicStrings(String topicStrings) {
-        List<NewsMessageTopic> topics = new ArrayList<>();
-        for (String topicString : topicStrings.split(",")) {
-            try {
-                topics.add(NewsMessageTopic.valueOf(topicString.trim()));
-            } catch (IllegalArgumentException e) {
-                throw new IllegalArgumentException("Kein topic mit dem Namen " + topicString + " verfügbar");
-            }
-        }
-        return topics;
-    }
-
-    public NewsMessage(String date, String author, List<NewsMessageTopic> topics, String headline) {
+    public NewsMessage(String date, String author, NewsMessageTopics topics, String headline) {
         this.date = date;
         this.author = author;
         this.topics = topics;
         this.headline = headline;
     }
 
-    public NewsMessage(String date, String author, List<NewsMessageTopic> topics, String headline, String text) {
+    public NewsMessage(String date, String author, NewsMessageTopics topics, String headline, String text) {
         this(date, author, topics, headline);
         this.text = text;
     }
@@ -57,7 +43,7 @@ public class NewsMessage {
         return author;
     }
 
-    public List<NewsMessageTopic> getTopics() {
+    public NewsMessageTopics getTopics() {
         return topics;
     }
 

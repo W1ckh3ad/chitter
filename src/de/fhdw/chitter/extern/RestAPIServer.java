@@ -3,6 +3,7 @@ package de.fhdw.chitter.extern;
 import java.io.File;
 import java.io.IOException;
 
+import de.fhdw.chitter.models.NewsMessageTopic;
 import org.atmosphere.cpr.AtmosphereResource;
 import org.atmosphere.nettosphere.Config;
 import org.atmosphere.nettosphere.Handler;
@@ -38,7 +39,7 @@ public class RestAPIServer implements Handler {
 			String path = r.getRequest().getPathInfo();
 
 			// extract topic from path
-			String topic = path.split("/")[1].toLowerCase();
+			NewsMessageTopic topic = NewsMessageTopic.valueOf(path.split("/")[1]);
 			
 			// build response text
 			String[] files = new File("data").list();
@@ -49,7 +50,7 @@ public class RestAPIServer implements Handler {
 			{
 				NewsMessage msg = MyFileHandler.readFromFile("data/"+ f);
 				
-				if(msg.getTopics().toString().toLowerCase().equals(topic))
+				if(msg.getTopics().contains(topic))
 				{
 					
 					response.append(msg.toString());

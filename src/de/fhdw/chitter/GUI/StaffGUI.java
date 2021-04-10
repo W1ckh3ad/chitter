@@ -178,7 +178,7 @@ public class StaffGUI extends JFrame implements ActionListener {
 		// switchcase überflüssig
 		// bessere Variablennamen
 		try {
-			NewsMessage m = new NewsMessage(date, staff, NewsMessage.readTopicStrings(topicStr), headline, text);
+			NewsMessage m = new NewsMessage(date, staff, NewsMessageTopics.fromString(topicStr), headline, text);
 			Newssystem.getInstance().publish(m);
 		} catch (Exception e) {
 			lblUsermsg.setText(e.getMessage());

@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.fhdw.chitter.models.NewsMessage;
 import de.fhdw.chitter.models.NewsMessageTopic;
+import de.fhdw.chitter.models.NewsMessageTopics;
 
 public class MyFileHandler {
     public static boolean fileExists(String filename) {
@@ -59,7 +60,7 @@ public class MyFileHandler {
     public static NewsMessage readFromFile(String filename) throws IOException {
 
         BufferedReader myReader = new BufferedReader(new FileReader(filename));
-        var model = new NewsMessage(myReader.readLine(), myReader.readLine(), NewsMessage.readTopicStrings(myReader.readLine()), myReader.readLine());
+        var model = new NewsMessage(myReader.readLine(), myReader.readLine(), NewsMessageTopics.fromString(myReader.readLine()), myReader.readLine());
 
         StringBuffer msgBuffer = new StringBuffer();
         String line = myReader.readLine();
@@ -91,7 +92,7 @@ public class MyFileHandler {
             myWriter.write("\n");
             myWriter.write(model.getAuthor());
             myWriter.write("\n");
-            myWriter.write(String.join(",", topicsStrings));
+            myWriter.write(model.getTopics().toString());
             myWriter.write("\n");
             myWriter.write(model.getHeadline());
             myWriter.write("\n");

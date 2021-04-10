@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 
 import de.fhdw.chitter.models.NewsMessage;
 import de.fhdw.chitter.models.NewsMessageTopic;
+import de.fhdw.chitter.models.NewsMessageTopics;
 import de.fhdw.chitter.utils.MyFileHandler;
 import de.fhdw.chitter.*;
 
@@ -88,7 +89,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 	public void actionPerformed(ActionEvent arg0) {
 		List<NewsMessageTopic> topics;
 		try {
-			topics = NewsMessage.readTopicStrings(txtTopic.getText());
+			topics = NewsMessageTopics.fromString(txtTopic.getText());
 		} catch (Exception e) {
 			txtText.append(e.getMessage());
 			return;
@@ -117,7 +118,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 				for (String f : files) {
 					try {
 						NewsMessage msg = MyFileHandler.readFromFile("data/" + f);
-						if (msg.getTopics().equals(topic)) {
+						if (msg.getTopics().contains(topic)) {
 							txtText.append("#########################\n");
 							txtText.append(msg.toString());
 
