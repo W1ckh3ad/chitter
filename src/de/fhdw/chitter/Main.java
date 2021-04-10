@@ -29,6 +29,8 @@ public class Main {
 		WebSocketServer wsServer = WebSocketServer.getInstance();
 		wsServer.start();
 
+		WebSocketReceiver.getInstance().register();
+
 		// start gui
 		new AdminGUI();
 		new StaffGUI();
