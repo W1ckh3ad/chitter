@@ -19,7 +19,7 @@ import de.fhdw.chitter.models.NewsMessageTopic;
 import de.fhdw.chitter.utils.MyFileHandler;
 import de.fhdw.chitter.*;
 
-public class ReceiverGUI extends JFrame implements ActionListener {
+public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 
 	private JTextField txtTopic;
 	private JButton btnRegister;
@@ -88,12 +88,7 @@ public class ReceiverGUI extends JFrame implements ActionListener {
 			return;
 		}
 
-		Newssystem.getInstance().register(topic, new Receiver() {
-			public void receiveMessage(NewsMessage msg) {
-				txtText.append("#########################\n");
-				txtText.append(msg.toString());
-			}
-		});
+		Newssystem.getInstance().register(topic, this);
 		txtText.append("Topic " + topic.toString() + " wurde registriert\n");
 
 		// Listet alle Dateien auf und looped durch alle
@@ -125,5 +120,10 @@ public class ReceiverGUI extends JFrame implements ActionListener {
 
 		}
 
+	}
+
+	public void receiveMessage(NewsMessage msg) {
+		txtText.append("#########################\n");
+		txtText.append(msg.toString());
 	}
 }
