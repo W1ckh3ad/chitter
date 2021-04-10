@@ -6,7 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.List;
 
 import de.fhdw.chitter.models.NewsMessage;
 import de.fhdw.chitter.models.NewsMessageTopic;
@@ -58,7 +59,7 @@ public class MyFileHandler {
     public static NewsMessage readFromFile(String filename) throws IOException {
 
         BufferedReader myReader = new BufferedReader(new FileReader(filename));
-        var model = new NewsMessage(myReader.readLine(), myReader.readLine(), NewsMessageTopic.valueOf(myReader.readLine()), myReader.readLine());
+        var model = new NewsMessage(myReader.readLine(), myReader.readLine(), NewsMessage.readTopicStrings(myReader.readLine()), myReader.readLine());
 
         StringBuffer msgBuffer = new StringBuffer();
         String line = myReader.readLine();
@@ -79,13 +80,18 @@ public class MyFileHandler {
         createFile(filename);
         // }
 
+        List<String> topicsStrings = new ArrayList<>();
+        for (NewsMessageTopic t : model.getTopics()) {
+            topicsStrings.add(t.toString());
+        }
+
         try {
             FileWriter myWriter = new FileWriter(filename);
             myWriter.write(model.getDate());
             myWriter.write("\n");
             myWriter.write(model.getAuthor());
             myWriter.write("\n");
-            myWriter.write(model.getTopic().toString());
+            myWriter.write(String.join(",", topicsStrings));
             myWriter.write("\n");
             myWriter.write(model.getHeadline());
             myWriter.write("\n");

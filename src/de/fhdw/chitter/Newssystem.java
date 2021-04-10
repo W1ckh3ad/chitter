@@ -1,20 +1,17 @@
 package de.fhdw.chitter;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import de.fhdw.chitter.models.*;
 import de.fhdw.chitter.utils.MarkDownParser;
 
 public class Newssystem {
-	public Map<NewsMessageTopic, List<Receiver>> receivers = new HashMap<>();
+	public Map<NewsMessageTopic, Set<Receiver>> receivers = new HashMap<>();
 	
 	private Newssystem()
 	{
 		for(NewsMessageTopic topic : NewsMessageTopic.values()) {
-			this.receivers.put(topic, new ArrayList<>());
+			this.receivers.put(topic, new HashSet<>());
 		}
 	}
 	// Zustand Singleton pattern
@@ -51,8 +48,10 @@ public class Newssystem {
 
 	public void publish(NewsMessage msg) {
 		msg.setText( MarkDownParser.parse(msg.getText()));
-		for (Receiver receiver : this.receivers.get(msg.getTopic())) {
-			receiver.receiveMessage(msg);
+		for (NewsMessageTopic topic : msg.getTopics()) {
+			for (Receiver receiver : this.receivers.get(topic)) {
+				receiver.receiveMessage(msg);
+			}
 		}
 	}
 }

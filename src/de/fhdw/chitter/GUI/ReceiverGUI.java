@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -85,21 +86,22 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		String topicStr = txtTopic.getText();
-		NewsMessageTopic topic;
+		List<NewsMessageTopic> topics;
 		try {
-			topic = NewsMessageTopic.valueOf(topicStr);
+			topics = NewsMessage.readTopicStrings(txtTopic.getText());
 		} catch (Exception e) {
-			txtText.append("Kein topic mit dem Namen " + topicStr + " verfügbar");
+			txtText.append(e.getMessage());
 			return;
 		}
 
-		if (arg0.getSource() == btnRegister) {
-			this.registerTopic(topic);
-		}
+		for (NewsMessageTopic topic : topics) {
+			if (arg0.getSource() == btnRegister) {
+				this.registerTopic(topic);
+			}
 
-		if (arg0.getSource() == btnUnregister) {
-			this.unregisterTopic(topic);
+			if (arg0.getSource() == btnUnregister) {
+				this.unregisterTopic(topic);
+			}
 		}
 	}
 
@@ -115,7 +117,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 				for (String f : files) {
 					try {
 						NewsMessage msg = MyFileHandler.readFromFile("data/" + f);
-						if (msg.getTopic().equals(topic)) {
+						if (msg.getTopics().equals(topic)) {
 							txtText.append("#########################\n");
 							txtText.append(msg.toString());
 

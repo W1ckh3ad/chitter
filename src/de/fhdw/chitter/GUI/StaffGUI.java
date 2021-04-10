@@ -177,14 +177,11 @@ public class StaffGUI extends JFrame implements ActionListener {
 		// neue Publishfunktion verwenden
 		// switchcase überflüssig
 		// bessere Variablennamen
-		NewsMessageTopic topic;
 		try {
-			topic = NewsMessageTopic.valueOf(topicStr);
+			NewsMessage m = new NewsMessage(date, staff, NewsMessage.readTopicStrings(topicStr), headline, text);
+			Newssystem.getInstance().publish(m);
 		} catch (Exception e) {
-			lblUsermsg.setText("Kein topic mit dem Namen " + topicStr + " verfügbar");
-			return;
+			lblUsermsg.setText(e.getMessage());
 		}
-		NewsMessage m = new NewsMessage(date, staff, topic, headline, text);
-		Newssystem.getInstance().publish(m);
 	}
 }

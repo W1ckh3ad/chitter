@@ -1,23 +1,37 @@
 package de.fhdw.chitter.models;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class NewsMessage {
     private String date;
     private String author;
-    private NewsMessageTopic topic;
+    private List<NewsMessageTopic> topics;
     private String headline;
     private String text;
 
-    public NewsMessage(String date, String author, NewsMessageTopic topic, String headline) {
+    public static List<NewsMessageTopic> readTopicStrings(String topicStrings) {
+        List<NewsMessageTopic> topics = new ArrayList<>();
+        for (String topicString : topicStrings.split(",")) {
+            try {
+                topics.add(NewsMessageTopic.valueOf(topicString.trim()));
+            } catch (IllegalArgumentException e) {
+                throw new IllegalArgumentException("Kein topic mit dem Namen " + topicString + " verfügbar");
+            }
+        }
+        return topics;
+    }
+
+    public NewsMessage(String date, String author, List<NewsMessageTopic> topics, String headline) {
         this.date = date;
         this.author = author;
-        this.topic = topic;
+        this.topics = topics;
         this.headline = headline;
     }
 
-    public NewsMessage(String date, String author, NewsMessageTopic topic, String headline, String text) {
-        this(date, author, topic, headline);
+    public NewsMessage(String date, String author, List<NewsMessageTopic> topics, String headline, String text) {
+        this(date, author, topics, headline);
         this.text = text;
     }
 
@@ -43,8 +57,8 @@ public class NewsMessage {
         return author;
     }
 
-    public NewsMessageTopic getTopic() {
-        return topic;
+    public List<NewsMessageTopic> getTopics() {
+        return topics;
     }
 
     public String getHeadline() {
@@ -65,7 +79,7 @@ public class NewsMessage {
 
     @Override
     public String toString() {
-        return headline + "[" + topic + "]\n" + text + "\n(" + author + "," + date + ")\n";
+        return headline + "[" + topics + "]\n" + text + "\n(" + author + "," + date + ")\n";
 
     }
 

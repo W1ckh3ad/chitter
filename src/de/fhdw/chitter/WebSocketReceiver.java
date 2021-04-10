@@ -25,7 +25,7 @@ public class WebSocketReceiver implements Receiver {
 
     @Override
     public void receiveMessage(NewsMessage msg) {
-        String msgtext = "<h2>" + msg.getTopic() + "</h2><br><h3>" + msg.getHeadline() + "</h3><br>" + "\n"
+        String msgtext = "<h2>" + msg.getTopics() + "</h2><br><h3>" + msg.getHeadline() + "</h3><br>" + "\n"
                 + msg.getText() + "<br><br><hr>";
 
 
