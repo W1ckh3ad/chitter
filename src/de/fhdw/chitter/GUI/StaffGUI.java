@@ -62,32 +62,19 @@ public class StaffGUI extends JFrame implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				isLoggedin = Staffsystem.getInstance().checkLogin(txtStaff.getText(), txtPassword.getText());
 
-				Staff[] stafflist = Newssystem.getInstance().stafflist;
+				if (isLoggedin) {
+					lblUsermsg.setText("Benutzer ist eingeloggt.");
 
-				for (int i = 0; i < stafflist.length; i++) {
-					Staff s = stafflist[i];
-					if (s != null) {
-						if (s.getUsername().equals(txtStaff.getText())) {
-							if (s.getPassword().equals(txtPassword.getText())) {
-								isLoggedin = true;
-								lblUsermsg.setText("Benutzer ist eingeloggt.");
+					txtStaff.setEnabled(false);
+					txtPassword.setEnabled(false);
 
-								txtStaff.setEnabled(false);
-								txtPassword.setEnabled(false);
+					btnSend.setEnabled(true);
+					txtText.setEnabled(true);
 
-								btnSend.setEnabled(true);
-								txtText.setEnabled(true);
-
-								btnLogin.setEnabled(false);
-
-								break;
-							}
-						}
-					}
-				}
-
-				if (isLoggedin == false) {
+					btnLogin.setEnabled(false);
+				} else {
 					lblUsermsg.setText("Benutzername bzw. Passwort falsch.");
 
 					txtStaff.setEnabled(true);
@@ -95,7 +82,6 @@ public class StaffGUI extends JFrame implements ActionListener {
 
 					btnSend.setEnabled(false);
 					txtText.setEnabled(false);
-
 				}
 			}
 		});
