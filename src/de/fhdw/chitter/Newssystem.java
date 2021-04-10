@@ -33,9 +33,19 @@ public class Newssystem {
 		this.receivers.get(topic).add(receiver);
 	}
 
+	public void unregister(NewsMessageTopic topic, Receiver receiver) {
+		this.receivers.get(topic).remove(receiver);
+	}
+
 	public void registerAllTopics(Receiver receiver) {
 		for (NewsMessageTopic topic : NewsMessageTopic.values()) {
-			this.receivers.get(topic).add(receiver);
+			this.register(topic, receiver);
+		}
+	}
+
+	public void unregisterAllTopics(Receiver receiver) {
+		for (NewsMessageTopic topic : NewsMessageTopic.values()) {
+			this.unregister(topic, receiver);
 		}
 	}
 

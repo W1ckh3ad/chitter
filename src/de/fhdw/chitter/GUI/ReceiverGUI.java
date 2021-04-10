@@ -23,6 +23,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 
 	private JTextField txtTopic;
 	private JButton btnRegister;
+	private JButton btnUnregister;
 	private JTextArea txtText;
 	// unregister Button
 	// Enabled wenn Register Button geklickt
@@ -48,9 +49,14 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 		txtTopic.setText("Sport");
 		// var definitions var btnRegister
 		topPanel.add(txtTopic);
+
 		btnRegister = new javax.swing.JButton("Register");
 		btnRegister.addActionListener(this);
 		topPanel.add(btnRegister);
+
+		btnUnregister = new javax.swing.JButton("Unregister");
+		btnUnregister.addActionListener(this);
+		topPanel.add(btnUnregister);
 
 		add(topPanel, BorderLayout.PAGE_START);
 
@@ -88,6 +94,16 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 			return;
 		}
 
+		if (arg0.getSource() == btnRegister) {
+			this.registerTopic(topic);
+		}
+
+		if (arg0.getSource() == btnUnregister) {
+			this.unregisterTopic(topic);
+		}
+	}
+
+	protected void registerTopic(NewsMessageTopic topic) {
 		Newssystem.getInstance().register(topic, this);
 		txtText.append("Topic " + topic.toString() + " wurde registriert\n");
 
@@ -117,9 +133,12 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 
 			System.out.println("####################################################################################");
 			e.printStackTrace();
-
 		}
+	}
 
+	protected void unregisterTopic(NewsMessageTopic topic) {
+		Newssystem.getInstance().unregister(topic, this);
+		txtText.append("Topic " + topic.toString() + " wurde deregistriert\n");
 	}
 
 	public void receiveMessage(NewsMessage msg) {
