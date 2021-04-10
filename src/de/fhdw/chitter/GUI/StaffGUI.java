@@ -182,7 +182,7 @@ public class StaffGUI extends JFrame implements ActionListener {
 		SimpleDateFormat sdf_message = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		// constructor
 		String date = sdf_message.format(System.currentTimeMillis());
-		NewsMessage m = new NewsMessage(date, staff, topic, headline, text);
+		NewsMessage m = new NewsMessage(date, staff, NewsMessageTopic.valueOf(topic), headline, text);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
 

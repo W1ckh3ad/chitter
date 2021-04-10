@@ -49,7 +49,7 @@ public class RestAPIServer implements Handler {
 			{
 				NewsMessage msg = MyFileHandler.readFromFile("data/"+ f);
 				
-				if(msg.getTopic().toLowerCase().equals(topic))
+				if(msg.getTopic().toString().toLowerCase().equals(topic))
 				{
 					
 					response.append(msg.toString());

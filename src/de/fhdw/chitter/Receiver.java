@@ -22,7 +22,7 @@ public class Receiver {
 	
 	// neu
 	public void reciveMessage(NewsMessage msg) {
-		System.out.println(msg.getTopic() + msg);
+		System.out.println(msg.getTopic().toString() + msg);
 		
 	}
 }

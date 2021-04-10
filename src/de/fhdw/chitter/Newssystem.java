@@ -29,7 +29,7 @@ public class Newssystem {
 	
 
 	// auslagern als ENUM
-	public String[] resorts = {"Sport","Politik","Wirtschaft"};
+	public NewsMessageTopic[] resorts = NewsMessageTopic.values();
 	
 	
 	private Newssystem()
@@ -67,8 +67,6 @@ public class Newssystem {
 	{
 		receiversWirtschaft[receiverWirtschaftPointer++] = receiver;
 	}
-	
-
 	
 	
 	// vereinfachen
