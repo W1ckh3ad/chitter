@@ -1,6 +1,10 @@
 package de.fhdw.chitter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.atmosphere.websocket.WebSocket;
 
@@ -16,13 +20,7 @@ public class Newssystem {
 	// OOP Patterns keine getter und Setter
 	
 	// Auslagern
-	public Receiver[] receiversSport = new Receiver[1000];
-	public Receiver[] receiversPolitik = new Receiver[1000];
-	public Receiver[] receiversWirtschaft = new Receiver[1000];
-	
-	public int receiverSportPointer = 0;
-	public int receiverPolitikPointer = 0;
-	public int receiverWirtschaftPointer = 0;
+	public Map<NewsMessageTopic, List<Receiver>> receivers = new HashMap<>();
 	
 	//auslagern	
 	public Staff[] stafflist = new Staff[10];
@@ -40,7 +38,10 @@ public class Newssystem {
 		// Stafflist in Dokument auslagern
 		stafflist[1] = new Staff("Hans", "12345");		
 		stafflist[2] = new Staff("John", "wer?");
-		
+
+		for(NewsMessageTopic topic : NewsMessageTopic.values()) {
+			this.receivers.put(topic, new ArrayList<>());
+		}
 	}
 	// Zustand Singleton pattern
 	private static Newssystem instance;
@@ -53,60 +54,16 @@ public class Newssystem {
 		
 		return instance;
 	}
-	
-	// vereinfachen, mit zweitem parameter
-	public void registerSportReceiver(Receiver receiver)
-	{
-		receiversSport[receiverSportPointer++] = receiver;
+
+	public void register(NewsMessageTopic topic, Receiver receiver) {
+		this.receivers.get(topic).add(receiver);
 	}
-	public void registerPolitikReceiver(Receiver receiver)
-	{
-		receiversPolitik[receiverPolitikPointer++] = receiver;
-	}
-	public void registerWirtschaftReceiver(Receiver receiver)
-	{
-		receiversWirtschaft[receiverWirtschaftPointer++] = receiver;
-	}
-	
-	
-	// vereinfachen
-	// zwei publish-arten
-	public void publishSportNews(NewsMessage msg)
-	{
-		
+
+	public void publish(NewsMessage msg) {
 		msg.setText( MarkDownParser.parse(msg.getText()));
-		
-		for(int i=0; i<receiverSportPointer; i++)
-		{
-			receiversSport[i].receiveSportMessage(msg);
+		for (Receiver receiver : this.receivers.get(msg.getTopic())) {
+			receiver.receiveMessage(msg);
 		}
-		
-		publishMessageForTicker(msg);
-	}
-	public void publishPolitikNews(NewsMessage msg)
-	{
-		msg.setText( MarkDownParser.parse(msg.getText()));
-		
-		
-		for(int i=0; i<receiverPolitikPointer; i++)
-		{
-			receiversPolitik[i].receivePolitikMessage(msg);
-		}
-		
-		publishMessageForTicker(msg);
-		
-	}
-	public void publishWirtschaftNews(NewsMessage msg)
-	{
-		
-		msg.setText( MarkDownParser.parse(msg.getText()));
-		
-		
-		for(int i=0; i<receiverWirtschaftPointer; i++)
-		{
-			receiversWirtschaft[i].receiveWirtschaftMessage(msg);
-		}
-		
 		publishMessageForTicker(msg);
 	}
 	

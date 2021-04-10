@@ -15,6 +15,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import de.fhdw.chitter.models.NewsMessage;
+import de.fhdw.chitter.models.NewsMessageTopic;
 import de.fhdw.chitter.utils.MyFileHandler;
 import de.fhdw.chitter.*;
 
@@ -78,47 +79,23 @@ public class ReceiverGUI extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		String topic = txtTopic.getText();
-		// die neue recieveMessage
-		// txtAppend topic verwenden
-		// txtAppend neuen Filewriter verwenden
-		// Receiver erstellt, erweitert receiver Funktion ?!?!?!??!?
-		switch (topic) {
-		case "Sport":
-			Newssystem.getInstance().registerSportReceiver(new Receiver() {
-				public void receiveSportMessage(NewsMessage msg) {
-					txtText.append("#########################\n");
-					txtText.append(msg.toString());
-
-				}
-			});
-			txtText.append("Topic " + topic + " wurde registriert\n");
-			break;
-		case "Politik":
-			Newssystem.getInstance().registerPolitikReceiver(new Receiver() {
-				public void receivePolitikMessage(NewsMessage msg) {
-					txtText.append("#########################\n");
-					txtText.append(msg.toString());
-
-				}
-			});
-			txtText.append("Topic Politik wurde registriert\n");
-			break;
-		case "Wirtschaft":
-			Newssystem.getInstance().registerWirtschaftReceiver(new Receiver() {
-				public void receiveWirtschaftMessage(NewsMessage msg) {
-					txtText.append("#########################\n");
-					txtText.append(msg.toString());
-
-				}
-			});
-
-			txtText.append("Topic Wirtschaft wurde registriert\n");
-			break;
-
-		default:
-			txtText.append("Kein topic mit dem Namen " + topic + " verfügbar");
+		String topicStr = txtTopic.getText();
+		NewsMessageTopic topic;
+		try {
+			topic = NewsMessageTopic.valueOf(topicStr);
+		} catch (Exception e) {
+			txtText.append("Kein topic mit dem Namen " + topicStr + " verfügbar");
+			return;
 		}
+
+		Newssystem.getInstance().register(topic, new Receiver() {
+			public void receiveMessage(NewsMessage msg) {
+				txtText.append("#########################\n");
+				txtText.append(msg.toString());
+			}
+		});
+		txtText.append("Topic " + topic.toString() + " wurde registriert\n");
+
 		// Listet alle Dateien auf und looped durch alle
 		try {
 

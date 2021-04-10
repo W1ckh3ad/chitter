@@ -175,14 +175,13 @@ public class StaffGUI extends JFrame implements ActionListener {
 		}
 
 		String staff = txtStaff.getText();
-		String topic = txtTopic.getText();
+		String topicStr = txtTopic.getText();
 		String headline = txtHeadline.getText();
 		String text = txtText.getText();
 		// date Formater auslagern
 		SimpleDateFormat sdf_message = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 		// constructor
 		String date = sdf_message.format(System.currentTimeMillis());
-		NewsMessage m = new NewsMessage(date, staff, NewsMessageTopic.valueOf(topic), headline, text);
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
 
@@ -192,31 +191,14 @@ public class StaffGUI extends JFrame implements ActionListener {
 		// neue Publishfunktion verwenden
 		// switchcase überflüssig
 		// bessere Variablennamen
-		switch (topic) {
-		case "Sport":
-			Newssystem.getInstance().publishSportNews(m);
-
-			lblUsermsg.setText("Nachricht wurde versendet");
-			MyFileHandler.writeToFile(filename, m);
-			break;
-		case "Politik":
-			Newssystem.getInstance().publishPolitikNews(m);
-
-			lblUsermsg.setText("Nachricht wurde versendet");
-
-			MyFileHandler.writeToFile(filename, m);
-			break;
-		case "Wirtschaft":
-			Newssystem.getInstance().publishWirtschaftNews(m);
-
-			lblUsermsg.setText("Nachricht wurde versendet");
-
-			MyFileHandler.writeToFile(filename, m);
-			break;
-
-		default:
-			lblUsermsg.setText("Kein topic mit dem Namen " + topic + " verf��gbar");
+		NewsMessageTopic topic;
+		try {
+			topic = NewsMessageTopic.valueOf(topicStr);
+		} catch (Exception e) {
+			lblUsermsg.setText("Kein topic mit dem Namen " + topicStr + " verfügbar");
+			return;
 		}
-
+		NewsMessage m = new NewsMessage(date, staff, topic, headline, text);
+		Newssystem.getInstance().publish(m);
 	}
 }
