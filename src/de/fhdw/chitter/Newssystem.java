@@ -7,6 +7,8 @@ import de.fhdw.chitter.utils.MarkDownParser;
 
 public class Newssystem {
 	public Map<NewsMessageTopic, Set<Receiver>> receivers = new HashMap<>();
+
+	// Todo: We should add a history of news messages and add a method to initialize it from the files
 	
 	private Newssystem()
 	{
@@ -47,6 +49,7 @@ public class Newssystem {
 	}
 
 	public void publish(NewsMessage msg) {
+		// Todo: Markdown parsing is not the responsibility of news system
 		msg.setText( MarkDownParser.parse(msg.getText()));
 		for (NewsMessageTopic topic : msg.getTopics()) {
 			for (Receiver receiver : this.receivers.get(topic)) {

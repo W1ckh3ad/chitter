@@ -110,6 +110,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 		Newssystem.getInstance().register(topic, this);
 		txtText.append("Topic " + topic.toString() + " wurde registriert\n");
 
+		// Todo: This should be handled indirectly though Newssystem
 		// Listet alle Dateien auf und looped durch alle
 		try {
 

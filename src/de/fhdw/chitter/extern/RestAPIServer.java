@@ -48,6 +48,8 @@ public class RestAPIServer implements Handler {
 			response.append("<html><body>");
 			for (String f : files)
 			{
+
+				// Todo: This should be handled indirectly though Newssystem
 				NewsMessage msg = MyFileHandler.readFromFile("data/"+ f);
 				
 				if(msg.getTopics().contains(topic))
