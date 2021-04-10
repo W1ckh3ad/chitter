@@ -6,9 +6,16 @@ import org.atmosphere.websocket.WebSocket;
 
 import de.fhdw.chitter.extern.WebSocketServer;
 
-public class Newssystem {
+import de.fhdw.chitter.models.*;
+import de.fhdw.chitter.utils.MarkDownParser;
 
+public class Newssystem {
+	// Funktion Publish
+
+
+	// OOP Patterns keine getter und Setter
 	
+	// Auslagern
 	public Receiver[] receiversSport = new Receiver[1000];
 	public Receiver[] receiversPolitik = new Receiver[1000];
 	public Receiver[] receiversWirtschaft = new Receiver[1000];
@@ -17,29 +24,25 @@ public class Newssystem {
 	public int receiverPolitikPointer = 0;
 	public int receiverWirtschaftPointer = 0;
 	
+	//auslagern	
 	public Staff[] stafflist = new Staff[10];
 	
+
+	// auslagern als ENUM
 	public String[] resorts = {"Sport","Politik","Wirtschaft"};
 	
 	
 	private Newssystem()
 	{
-		Staff s1 = new Staff();
-		s1.name = "Max";
-		s1.passwort = "passwort";
+		Staff s1 = new Staff("Max", "passwort");
 		
 		stafflist[0] = s1;
-		
-		stafflist[1] = new Staff();
-		stafflist[1].name = "Hans";
-		stafflist[1].passwort = "12345";
-		
-		stafflist[2] = new Staff();
-		stafflist[2].name = "John";
-		stafflist[2].passwort = "wer?";
+		// Stafflist in Dokument auslagern
+		stafflist[1] = new Staff("Hans", "12345");		
+		stafflist[2] = new Staff("John", "wer?");
 		
 	}
-	
+	// Zustand Singleton pattern
 	private static Newssystem instance;
 	public static Newssystem getInstance()
 	{
@@ -51,6 +54,7 @@ public class Newssystem {
 		return instance;
 	}
 	
+	// vereinfachen, mit zweitem parameter
 	public void registerSportReceiver(Receiver receiver)
 	{
 		receiversSport[receiverSportPointer++] = receiver;
@@ -64,26 +68,15 @@ public class Newssystem {
 		receiversWirtschaft[receiverWirtschaftPointer++] = receiver;
 	}
 	
+
 	
-	private Newsmessage markdownParser(Newsmessage msg)
-	{
-		msg.text = msg.text.replaceAll("(?m)^#(?!#)(.*)", "<h1>$1</h1>");
-		msg.text = msg.text.replaceAll("(?m)^#{2}(?!#)(.*)", "<h2>$1</h2>");
-		msg.text = msg.text.replaceAll("(?m)^#{2}(?!#)(.*)", "<h3>$1</h3>");
-		
-		
-		msg.text = msg.text.replaceAll("\\*(.*)\\*", "<em>$1</em>");
-		msg.text = msg.text.replaceAll("\\*\\*(.*)\\*\\*", "<b>$1</b>");
-		
-		msg.text = msg.text.replaceAll("(?m)^\\* (.*)$", "<li> $1 </li>");
-		
-		return msg;
-	}
 	
-	public void publishSportNews(Newsmessage msg)
+	// vereinfachen
+	// zwei publish-arten
+	public void publishSportNews(NewsMessage msg)
 	{
 		
-		msg = markdownParser(msg);
+		msg.setText( MarkDownParser.parse(msg.getText()));
 		
 		for(int i=0; i<receiverSportPointer; i++)
 		{
@@ -92,9 +85,9 @@ public class Newssystem {
 		
 		publishMessageForTicker(msg);
 	}
-	public void publishPolitikNews(Newsmessage msg)
+	public void publishPolitikNews(NewsMessage msg)
 	{
-		msg = markdownParser(msg);
+		msg.setText( MarkDownParser.parse(msg.getText()));
 		
 		
 		for(int i=0; i<receiverPolitikPointer; i++)
@@ -105,10 +98,10 @@ public class Newssystem {
 		publishMessageForTicker(msg);
 		
 	}
-	public void publishWirtschaftNews(Newsmessage msg)
+	public void publishWirtschaftNews(NewsMessage msg)
 	{
 		
-		msg = markdownParser(msg);
+		msg.setText( MarkDownParser.parse(msg.getText()));
 		
 		
 		for(int i=0; i<receiverWirtschaftPointer; i++)
@@ -119,10 +112,10 @@ public class Newssystem {
 		publishMessageForTicker(msg);
 	}
 	
-	public void publishMessageForTicker(Newsmessage msg)
+	public void publishMessageForTicker(NewsMessage msg)
 	{
-		String msgtext = "<h2>" + msg.topic + "</h2><br><h3>" + msg.headline + "</h3><br>" + "\n" 
-				+ msg.text + "<br><br><hr>";
+		String msgtext = "<h2>" + msg.getTopic() + "</h2><br><h3>" + msg.getHeadline() + "</h3><br>" + "\n" 
+				+ msg.getText() + "<br><br><hr>";
 		
 		
 		WebSocket connection = WebSocketServer.getInstance().currentConnection;

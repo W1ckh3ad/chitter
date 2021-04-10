@@ -8,8 +8,8 @@ import org.atmosphere.nettosphere.Config;
 import org.atmosphere.nettosphere.Handler;
 import org.atmosphere.nettosphere.Nettosphere;
 
-import de.fhdw.chitter.Newsmessage;
-
+import de.fhdw.chitter.models.NewsMessage;
+import de.fhdw.chitter.utils.MyFileHandler;
 //https://github.com/Atmosphere/nettosphere
 
 public class RestAPIServer implements Handler {
@@ -29,7 +29,8 @@ public class RestAPIServer implements Handler {
 		server.start();
 	}
 	
-	
+	// Response Inhalt auslagern
+	// Aufgabe ist Request und Response zu behandeln
 	@Override
 	public void handle(AtmosphereResource r) {
 		// 
@@ -46,13 +47,12 @@ public class RestAPIServer implements Handler {
 			response.append("<html><body>");
 			for (String f : files)
 			{
-				Newsmessage msg = new Newsmessage();
-				msg.readFromFile("data/" + f);
+				NewsMessage msg = MyFileHandler.readFromFile("data/"+ f);
 				
-				if(msg.topic.toLowerCase().equals(topic))
+				if(msg.getTopic().toLowerCase().equals(topic))
 				{
 					
-					response.append(msg.headline + "[" + msg.topic + "]\n" + msg.text + "\n(" + msg.author + ")\n");
+					response.append(msg.toString());
 					response.append("<br><br>");
 				}
 					
