@@ -16,54 +16,48 @@ import de.fhdw.chitter.utils.MyFileHandler;
 public class RestAPIServer implements Handler {
 
 	private Nettosphere server;
-	
+
 	public RestAPIServer(String address, int port) {
-		server = new Nettosphere.Builder()
-				.config(new Config.Builder()
-						.host(address)
-						.port(port)
-						.resource(this).build()).build();
+		server = new Nettosphere.Builder().config(new Config.Builder().host(address).port(port).resource(this).build())
+				.build();
 
 	}
-	
+
 	public void start() {
 		server.start();
 	}
-	
+
 	// Response Inhalt auslagern
 	// Aufgabe ist Request und Response zu behandeln
 	@Override
 	public void handle(AtmosphereResource r) {
-		// 
+		//
 		try {
 			String path = r.getRequest().getPathInfo();
 
 			// extract topic from path
 			NewsMessageTopic topic = NewsMessageTopic.valueOf(path.split("/")[1]);
-			
+
 			// build response text
-			String[] files = new File("data").list();
-			
+			String[] files = MyFileHandler.getFileNames("data");
+
 			StringBuffer response = new StringBuffer();
 			response.append("<html><body>");
-			for (String f : files)
-			{
+			for (String f : files) {
 
 				// Todo: This should be handled indirectly though Newssystem
-				NewsMessage msg = MyFileHandler.readFromFile("data/"+ f);
-				
-				if(msg.getTopics().contains(topic))
-				{
-					
+				NewsMessage msg = MyFileHandler.readFromFile("data/" + f);
+
+				if (msg.getTopics().contains(topic)) {
+
 					response.append(msg.toString());
 					response.append("<br><br>");
 				}
-					
+
 			}
-			
+
 			response.append("</body></html>");
-			
-			
+
 			// write text message to response
 			r.getResponse().write(response.toString()).flushBuffer();
 		} catch (IOException e) {

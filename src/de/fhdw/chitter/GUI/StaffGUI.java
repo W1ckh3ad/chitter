@@ -31,8 +31,8 @@ public class StaffGUI extends JFrame implements ActionListener {
 	private JButton btnLogin;
 
 	private JLabel lblUsermsg;
-
-	boolean isLoggedin = false;
+	// isLoggedIn passt nicht zum OOP Pattern
+	private boolean isLoggedin = false;
 
 	public StaffGUI() {
 		this.setTitle("Staff GUI");

@@ -1,10 +1,10 @@
 package de.fhdw.chitter.models;
 
 public enum NewsMessageTopic {
-    Sport,
-    Wirtschaft,
-    Politik,
-    Wissenschaft,
-    Technik,
-    Computer
+    SPORT,
+    WIRTSCHAFT,
+    POLITIK,
+    WISSENSCHAFT,
+    TECHNIK,
+    COMPUTER
 }
