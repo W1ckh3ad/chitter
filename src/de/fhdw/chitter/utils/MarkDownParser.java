@@ -10,7 +10,8 @@ public class MarkDownParser {
         String returnText = text;
         returnText = text.replaceAll("(?m)^#(?!#)(.*)", "<h1>$1</h1>");
         returnText = text.replaceAll("(?m)^#{2}(?!#)(.*)", "<h2>$1</h2>");
-        returnText = text.replaceAll("(?m)^#{2}(?!#)(.*)", "<h3>$1</h3>");
+        // h3 sind in md ### nicht ##
+        returnText = text.replaceAll("(?m)^#{3}(?!#)(.*)", "<h3>$1</h3>");
 
         returnText = text.replaceAll("\\*(.*)\\*", "<em>$1</em>");
         returnText = text.replaceAll("\\*\\*(.*)\\*\\*", "<b>$1</b>");
@@ -33,3 +34,6 @@ public class MarkDownParser {
     // return msg;
     // }
 }
+
+// # ErsteÜberschrift
+// <h1>ErsteÜberschrift</h1>
