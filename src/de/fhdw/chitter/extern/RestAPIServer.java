@@ -36,7 +36,7 @@ public class RestAPIServer implements Handler {
 			String path = r.getRequest().getPathInfo();
 
 			// extract topic from path
-			NewsMessageTopic topic = NewsMessageTopic.valueOf(path.split("/")[1]);
+			NewsMessageTopic topic = NewsMessageTopic.getElemWithStringCaseInsensitive(path.split("/")[1]);
 
 			// build response text
 			String[] files = MyFileHandler.getFileNames("data");

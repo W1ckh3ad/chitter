@@ -9,7 +9,7 @@ public class NewsMessageTopics extends ArrayList<NewsMessageTopic> {
         NewsMessageTopics topics = new NewsMessageTopics();
         for (String topicString : topicsString.split(",")) {
             try {
-                topics.add(NewsMessageTopic.valueOf(topicString.trim()));
+                topics.add(NewsMessageTopic.getElemWithStringCaseSensitive(topicString));
             } catch (IllegalArgumentException e) {
                 throw new IllegalArgumentException("Kein topic mit dem Namen " + topicString + " verfügbar");
             }
