@@ -32,16 +32,17 @@
       document.getElementById("scrollTo").scrollIntoView();
     };
 
-    sendButton.onclick = function (event) {
-      sendMessage(messageInput.value);
-      messageInput.value = "";
-    };
+    // Button existiert nicht
+    // sendButton.onclick = function (event) {
+    //   sendMessage(messageInput.value);
+    //   messageInput.value = "";
+    // };
 
-    sendImageButton.onclick = function (event) {
-      let file = fileInput.files[0];
-      sendMessage(file);
-      fileInput.value = null;
-    };
+    // sendImageButton.onclick = function (event) {
+    //   let file = fileInput.files[0];
+    //   sendMessage(file);
+    //   fileInput.value = null;
+    // };
 
     function sendMessage(message) {
       socket.send(message);

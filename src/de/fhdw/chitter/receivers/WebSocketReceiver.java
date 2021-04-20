@@ -1,8 +1,11 @@
-package de.fhdw.chitter;
+package de.fhdw.chitter.receivers;
 
+import de.fhdw.chitter.Newssystem;
 import de.fhdw.chitter.extern.WebSocketServer;
 import de.fhdw.chitter.models.NewsMessage;
+import de.fhdw.chitter.receivers.interfaces.Receiver;
 import de.fhdw.chitter.utils.MyFileHandler;
+import de.fhdw.chitter.utils.MyMessageFormatter;
 
 import org.atmosphere.websocket.WebSocket;
 
@@ -12,12 +15,6 @@ public class WebSocketReceiver implements Receiver {
     private static WebSocketReceiver instance;
 
     private WebSocketReceiver() {
-    }
-
-    // TODO: Auslagern in Parser, Alternativ einen Formatter erstellen
-    private String markup(NewsMessage msg) {
-        return "<h2>" + msg.getTopics() + "</h2><br><h3>" + msg.getHeadline() + "</h3><br>" + "\n" + msg.getText()
-                + "<br><br><hr>";
     }
 
     public static WebSocketReceiver getInstance() {
@@ -33,7 +30,11 @@ public class WebSocketReceiver implements Receiver {
         // WebSocket connection = WebSocketServer.getInstance().currentConnection;
 
         newssystem.registerAllTopics(this);
-
+        try {
+            WebSocketServer.getInstance().currentConnection.write("Test");
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
         // String[] pathes = MyFileHandler.getFileNames("data");
         // for (String path : pathes) {
         // try {
@@ -46,8 +47,6 @@ public class WebSocketReceiver implements Receiver {
 
     @Override
     public void receiveMessage(NewsMessage msg) {
-        String msgtext = "<h2>" + msg.getTopics() + "</h2><br><h3>" + msg.getHeadline() + "</h3><br>" + "\n"
-                + msg.getText() + "<br><br><hr>";
 
         WebSocket connection = WebSocketServer.getInstance().currentConnection;
 
@@ -56,7 +55,7 @@ public class WebSocketReceiver implements Receiver {
         }
 
         try {
-            connection.write(msgtext);
+            connection.write(MyMessageFormatter.toHtml(msg));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,22 +1,43 @@
 package de.fhdw.chitter.models;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 public class NewsMessage {
     private String date;
     private String author;
-    private NewsMessageTopics topics;
+    private ArrayList<String> topics;
     private String headline;
     private String text;
 
-    public NewsMessage(String date, String author, NewsMessageTopics topics, String headline) {
+    public NewsMessage(String date, String author, ArrayList<String> topics, String headline) {
         this.date = date;
         this.author = author;
         this.topics = topics;
         this.headline = headline;
     }
 
-    public NewsMessage(String date, String author, NewsMessageTopics topics, String headline, String text) {
+    private NewsMessage(String date, String author, String headline) {
+        this.date = date;
+        this.author = author;
+        this.headline = headline;
+    }
+
+    public NewsMessage(String date, String author, ArrayList<String> topics, String headline, String text) {
+        this(date, author, topics, headline);
+        this.text = text;
+    }
+
+    public NewsMessage(String date, String author, String[] topics, String headline) {
+        this(date, author, headline);
+        var topicsArrayList = new ArrayList<String>();
+        for (String string : topics) {
+            topicsArrayList.add(string);
+        }
+        this.topics = topicsArrayList;
+    }
+
+    public NewsMessage(String date, String author, String[] topics, String headline, String text) {
         this(date, author, topics, headline);
         this.text = text;
     }
@@ -43,16 +64,12 @@ public class NewsMessage {
         return author;
     }
 
-    public NewsMessageTopics getTopics() {
+    public ArrayList<String> getTopics() {
         return topics;
     }
 
     public String getHeadline() {
         return headline;
-    }
-
-    public void setHeadline(String headline) {
-        this.headline = headline;
     }
 
     public String getText() {
@@ -62,11 +79,4 @@ public class NewsMessage {
     public void setText(String text) {
         this.text = text;
     }
-
-    @Override
-    public String toString() {
-        return headline + "[" + topics + "]\n" + text + "\n(" + author + "," + date + ")\n";
-
-    }
-
 }

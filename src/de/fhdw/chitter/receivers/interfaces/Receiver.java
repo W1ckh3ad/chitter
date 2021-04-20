@@ -1,4 +1,4 @@
-package de.fhdw.chitter;
+package de.fhdw.chitter.receivers.interfaces;
 
 import de.fhdw.chitter.models.NewsMessage;
 

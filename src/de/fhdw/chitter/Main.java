@@ -3,9 +3,18 @@ package de.fhdw.chitter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 import de.fhdw.chitter.extern.RestAPIServer;
 import de.fhdw.chitter.extern.WebSocketServer;
-import de.fhdw.chitter.GUI.*;
+import de.fhdw.chitter.gui.*;
+import de.fhdw.chitter.utils.*;
+import de.fhdw.chitter.models.*;
+import de.fhdw.chitter.processors.MessageTypeProcessor;
+import de.fhdw.chitter.processors.MessagesProcessor;
+import de.fhdw.chitter.processors.UsersProcessor;
+import de.fhdw.chitter.receivers.WebSocketReceiver;
+import de.fhdw.chitter.services.UserService;
 
 // Directories
 // Models (für DTO)
@@ -21,8 +30,10 @@ public class Main {
 
 		// start newsserver
 		Newssystem newssystem = Newssystem.getInstance();
-
+		// var usersProcessor = UsersProcessor.getInstance();
 		// start external server api
+		System.out.println(DigestUtils.sha256Hex("passwort"));
+		System.out.println(DigestUtils.sha256Hex("passwort"));
 		RestAPIServer server = new RestAPIServer("127.0.0.1", 8080);
 		server.start();
 
@@ -33,8 +44,6 @@ public class Main {
 
 		// start gui
 		new AdminGUI();
-		new StaffGUI();
-		new ReceiverGUI();
 
 		BufferedReader readUConsole = new BufferedReader(new InputStreamReader(System.in));
 		while (true) {

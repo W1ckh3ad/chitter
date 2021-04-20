@@ -1,0 +1,125 @@
+<userConfig>
+    <maxUser value="15" />
+    <password>  
+        <length>
+            <min value="8" />
+            <max value="16" />
+        </length>
+        <number>
+            <characters>
+                <char value="0" />
+                <char value="1" />
+                <char value="2" />
+                <char value="3" />
+                <char value="4" />
+                <char value="5" />
+                <char value="6" />
+                <char value="7" />
+                <char value="8" />
+                <char value="9" />
+            </characters>
+            <min value="1" />
+        </number>
+        <lowerCase>
+        <characters>
+                <char value="a" />
+                <char value="b" />
+                <char value="c" />
+                <char value="d" />
+                <char value="e" />
+                <char value="f" />
+                <char value="g" />
+                <char value="h" />
+                <char value="i" />
+                <char value="j" />
+                <char value="k" />
+                <char value="l" />
+                <char value="m" />
+                <char value="n" />
+                <char value="o" />
+                <char value="p" />
+                <char value="q" />
+                <char value="r" />
+                <char value="s" />
+                <char value="t" />
+                <char value="u" />
+                <char value="v" />
+                <char value="w" />
+                <char value="x" />
+                <char value="y" />
+                <char value="z" />
+                <char value="ß" />
+            </characters>
+            <min value="1" />
+        </lowerCase>
+        <upperCase>
+            <characters>        
+                <char value="A" />
+                <char value="B" />
+                <char value="C" />
+                <char value="D" />
+                <char value="E" />
+                <char value="F" />
+                <char value="G" />
+                <char value="H" />
+                <char value="I" />
+                <char value="J" />
+                <char value="K" />
+                <char value="L" />
+                <char value="M" />
+                <char value="N" />
+                <char value="O" />
+                <char value="P" />
+                <char value="Q" />
+                <char value="R" />
+                <char value="S" />
+                <char value="T" />
+                <char value="U" />
+                <char value="V" />
+                <char value="W" />
+                <char value="X" />
+                <char value="Y" />
+                <char value="Z" />
+            </characters>
+            <min value="1" />
+        </upperCase>
+        <specialCharecter>
+            <characters>        
+                <char value="!" />
+                <char value=">" />
+                <char value="<" />
+                <char value="|" />
+                <char value="," />
+                <char value="." />
+                <char value=";" />
+                <char value=":" />
+                <char value="-" />
+                <char value="_" />
+                <char value="'" />
+                <char value="#" />
+                <char value="+" />
+                <char value="*" />
+                <char value="~" />
+                <char value="´" />
+                <char value="`" />
+                <char value="?" />
+                <char value="\" />
+                <char value='"' />
+                <char value="$" />
+                <char value="§" />
+                <char value="$" />
+                <char value="%" />
+                <char value="&" />
+                <char value="/" />
+                <char value="(" />
+                <char value=")" />
+                <char value="[" />
+                <char value="]" />
+                <char value="{" />
+                <char value="}" />
+                <char value="=" />                
+            </characters>
+            <min value="1" />
+        </specialCharecter>
+    </password>
+</userConfig>

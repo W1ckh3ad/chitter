@@ -1,4 +1,4 @@
-package de.fhdw.chitter.GUI;
+package de.fhdw.chitter.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

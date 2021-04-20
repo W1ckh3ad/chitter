@@ -1,4 +1,4 @@
-package de.fhdw.chitter.GUI;
+package de.fhdw.chitter.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -6,8 +6,10 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
 import java.util.List;
 
+import javax.print.attribute.standard.Media;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,9 +18,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import de.fhdw.chitter.models.NewsMessage;
-import de.fhdw.chitter.models.NewsMessageTopic;
-import de.fhdw.chitter.models.NewsMessageTopics;
+import de.fhdw.chitter.processors.*;
+import de.fhdw.chitter.receivers.interfaces.Receiver;
 import de.fhdw.chitter.utils.MyFileHandler;
+import de.fhdw.chitter.utils.MyMessageFormatter;
 import de.fhdw.chitter.*;
 
 public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
@@ -32,6 +35,8 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 	// Löscht eventlistener vom RegisterButton
 	// Speichern, für was man sich registriert hat, damit dem Benutzer mitgeteilt
 	// wird, welche Topics unregistert sind
+
+	private MessagesProcessor messagesProcessor = MessagesProcessor.getInstance();
 
 	public ReceiverGUI() {
 		// Titel Ändern
@@ -82,20 +87,13 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 
 		add(basePanel, BorderLayout.CENTER);
 
-		pack();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		List<NewsMessageTopic> topics;
-		try {
-			topics = NewsMessageTopics.fromString(txtTopic.getText());
-		} catch (Exception e) {
-			txtText.append(e.getMessage());
-			return;
-		}
+		String[] topics = txtTopic.getText().split(",");
 
-		for (NewsMessageTopic topic : topics) {
+		for (String topic : topics) {
 			if (arg0.getSource() == btnRegister) {
 				this.registerTopic(topic);
 			}
@@ -106,31 +104,21 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 		}
 	}
 
-	protected void registerTopic(NewsMessageTopic topic) {
+	protected void registerTopic(String topic) {
 		Newssystem.getInstance().register(topic, this);
 		txtText.append("Topic " + topic.toString() + " wurde registriert\n");
 
 		// Todo: This should be handled indirectly though Newssystem
 		// Listet alle Dateien auf und looped durch alle
 		try {
-
-			String[] files = MyFileHandler.getFileNames("data");
-			if (files.length > 0) {
-				for (String f : files) {
-					try {
-						NewsMessage msg = MyFileHandler.readFromFile("data/" + f);
-						if (msg.getTopics().contains(topic)) {
-							txtText.append("#########################\n");
-							txtText.append(msg.toString());
-
-						}
-					} catch (Exception e) {
-						System.out.println("Error");
-						e.printStackTrace();
-						continue;
-					}
+			var messages = messagesProcessor.get(topic, 5);
+			for (NewsMessage newsMessage : messages) {
+				if (newsMessage != null) {
+					txtText.append("#########################\n");
+					txtText.append(MyMessageFormatter.toString(newsMessage));
 				}
 			}
+
 		} catch (Exception e) {
 			System.out.println("####################################################################################");
 			System.out.println("Error while doing stuff");
@@ -140,13 +128,19 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 		}
 	}
 
-	protected void unregisterTopic(NewsMessageTopic topic) {
-		Newssystem.getInstance().unregister(topic, this);
-		txtText.append("Topic " + topic.toString() + " wurde deregistriert\n");
+	protected void unregisterTopic(String topic) {
+		Newssystem.getInstance().unregisterAllTopics(this);
+		txtText.append("\nTopic " + topic.toString() + " wurde deregistriert\n");
 	}
 
 	public void receiveMessage(NewsMessage msg) {
 		txtText.append("#########################\n");
-		txtText.append(msg.toString());
+		txtText.append(MyMessageFormatter.toString(msg));
+	}
+
+	@Override
+	public void dispose() {
+		Newssystem.getInstance().unregisterAllTopics(this);
+		super.dispose();
 	}
 }

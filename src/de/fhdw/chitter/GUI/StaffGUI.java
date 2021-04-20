@@ -1,4 +1,4 @@
-package de.fhdw.chitter.GUI;
+package de.fhdw.chitter.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -17,8 +17,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import de.fhdw.chitter.models.*;
+import de.fhdw.chitter.processors.MessagesProcessor;
+import de.fhdw.chitter.services.UserService;
 import de.fhdw.chitter.*;
-import de.fhdw.chitter.utils.MyFileHandler;
 
 public class StaffGUI extends JFrame implements ActionListener {
 
@@ -33,6 +34,8 @@ public class StaffGUI extends JFrame implements ActionListener {
 	private JLabel lblUsermsg;
 	// isLoggedIn passt nicht zum OOP Pattern
 	private boolean isLoggedin = false;
+
+	private MessagesProcessor messagesProcessor = MessagesProcessor.getInstance();
 
 	public StaffGUI() {
 		this.setTitle("Staff GUI");
@@ -62,7 +65,9 @@ public class StaffGUI extends JFrame implements ActionListener {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				isLoggedin = Staffsystem.getInstance().checkLogin(txtStaff.getText(), txtPassword.getText());
+				// isLoggedin = Staffsystem.getInstance().checkLogin(txtStaff.getText(),
+				// txtPassword.getText());
+				isLoggedin = UserService.logIn(txtStaff.getText(), txtPassword.getText());
 
 				if (isLoggedin) {
 					lblUsermsg.setText("Benutzer ist eingeloggt.");
@@ -169,16 +174,13 @@ public class StaffGUI extends JFrame implements ActionListener {
 		// constructor
 		String date = sdf_message.format(System.currentTimeMillis());
 
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HHmmss");
-
-		String filename = "data/msg_" + sdf.format(System.currentTimeMillis()) + ".txt";
-
 		// FileWriter verwenden
 		// neue Publishfunktion verwenden
 		// switchcase überflüssig
 		// bessere Variablennamen
 		try {
-			NewsMessage m = new NewsMessage(date, staff, NewsMessageTopics.fromString(topicStr), headline, text);
+			NewsMessage m = new NewsMessage(date, staff, topicStr.split(","), headline, text);
+			messagesProcessor.post(m);
 			Newssystem.getInstance().publish(m);
 		} catch (Exception e) {
 			lblUsermsg.setText(e.getMessage());
