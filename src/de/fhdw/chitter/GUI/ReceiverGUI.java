@@ -6,10 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowListener;
-import java.util.List;
 
-import javax.print.attribute.standard.Media;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,7 +17,6 @@ import javax.swing.JTextField;
 import de.fhdw.chitter.models.NewsMessage;
 import de.fhdw.chitter.processors.*;
 import de.fhdw.chitter.receivers.interfaces.Receiver;
-import de.fhdw.chitter.utils.MyFileHandler;
 import de.fhdw.chitter.utils.MyMessageFormatter;
 import de.fhdw.chitter.*;
 
@@ -43,7 +39,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 		this.setTitle("Receiver GUI");
 		this.setSize(1000, 1620);
 		// this.setResizable(false);
-		this.setLocation(150, 50);
+		this.setLocation(150, 250);
 		this.setVisible(true);
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -104,12 +100,9 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 		}
 	}
 
-	protected void registerTopic(String topic) {
+	private void registerTopic(String topic) {
 		Newssystem.getInstance().register(topic, this);
 		txtText.append("Topic " + topic.toString() + " wurde registriert\n");
-
-		// Todo: This should be handled indirectly though Newssystem
-		// Listet alle Dateien auf und looped durch alle
 		try {
 			var messages = messagesProcessor.get(topic, 5);
 			for (NewsMessage newsMessage : messages) {
@@ -120,15 +113,11 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 			}
 
 		} catch (Exception e) {
-			System.out.println("####################################################################################");
-			System.out.println("Error while doing stuff");
-
-			System.out.println("####################################################################################");
 			e.printStackTrace();
 		}
 	}
 
-	protected void unregisterTopic(String topic) {
+	private void unregisterTopic(String topic) {
 		Newssystem.getInstance().unregisterAllTopics(this);
 		txtText.append("\nTopic " + topic.toString() + " wurde deregistriert\n");
 	}

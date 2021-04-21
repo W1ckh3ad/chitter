@@ -4,8 +4,8 @@ import de.fhdw.chitter.models.NewsMessage;
 
 public class MyMessageFormatter {
     public static String toHtml(NewsMessage message) {
-        return "<h2>" + message.getTopics() + "</h2><br><h3>" + message.getHeadline() + "</h3><br>" + "\n"
-                + message.getText() + "<br><br><hr>";
+        return "<h2>" + message.getTopics() + "</h2><h3>" + message.getHeadline() + 
+        "</h3>" + "\n" + MyMarkDownParser.parse(message.getText()) + "<br><br><hr>";
     }
 
     public static String toString(NewsMessage message) {

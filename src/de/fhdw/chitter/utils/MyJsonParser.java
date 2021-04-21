@@ -2,10 +2,11 @@ package de.fhdw.chitter.utils;
 
 import java.util.ArrayList;
 
-import org.json.simple.*;
-import org.json.simple.parser.*;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import de.fhdw.chitter.models.*;
 
+@SuppressWarnings("unchecked")
 public class MyJsonParser {
 
     public static JSONObject getDefault() {

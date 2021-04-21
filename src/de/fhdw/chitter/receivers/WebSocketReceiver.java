@@ -4,7 +4,6 @@ import de.fhdw.chitter.Newssystem;
 import de.fhdw.chitter.extern.WebSocketServer;
 import de.fhdw.chitter.models.NewsMessage;
 import de.fhdw.chitter.receivers.interfaces.Receiver;
-import de.fhdw.chitter.utils.MyFileHandler;
 import de.fhdw.chitter.utils.MyMessageFormatter;
 
 import org.atmosphere.websocket.WebSocket;
@@ -27,22 +26,15 @@ public class WebSocketReceiver implements Receiver {
     // TODO: Beim WebSocket Connect vorhandene Nachrichten anzeigen
     public void register() {
         Newssystem newssystem = Newssystem.getInstance();
-        // WebSocket connection = WebSocketServer.getInstance().currentConnection;
 
         newssystem.registerAllTopics(this);
         try {
-            WebSocketServer.getInstance().currentConnection.write("Test");
+            var connection = WebSocketServer.getInstance().currentConnection;
+            if (connection != null)
+                connection.write("Test");
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
-        // String[] pathes = MyFileHandler.getFileNames("data");
-        // for (String path : pathes) {
-        // try {
-        // connection.write(markup(MyFileHandler.readFromFile(path)));
-        // } catch (IOException e){
-        // e.printStackTrace();
-        // }
-        // }
     }
 
     @Override
@@ -53,7 +45,6 @@ public class WebSocketReceiver implements Receiver {
         if (connection == null) {
             return;
         }
-
         try {
             connection.write(MyMessageFormatter.toHtml(msg));
         } catch (IOException e) {

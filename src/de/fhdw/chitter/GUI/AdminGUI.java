@@ -2,26 +2,21 @@ package de.fhdw.chitter.gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
 
 public class AdminGUI extends JFrame {
 
 	private JButton btnNewStaff;
 	private JButton btnNewReceiver;
+	private JButton btnSignUp;
 	private JButton btnExit;
-	
-// ist ok
+
+	// ist ok
 	public AdminGUI() {
 		this.setTitle("Admin GUI");
 		this.setSize(1000, 620);
@@ -54,6 +49,16 @@ public class AdminGUI extends JFrame {
 			}
 		});
 		topPanel.add(btnNewReceiver);
+
+		btnSignUp = new JButton("SignUp Redakteur");
+		btnSignUp.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				new SignUpGUI();
+			}
+		});
+		topPanel.add(btnSignUp);
 
 		btnExit = new JButton("Beenden");
 		btnExit.addActionListener(new ActionListener() {

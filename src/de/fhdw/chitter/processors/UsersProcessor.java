@@ -20,9 +20,7 @@ public class UsersProcessor extends Processor {
         path = "data/users.json";
         if (!MyFileHandler.fileExists(path)) {
             try {
-                MyFileHandler.createFile(path);
-                var obj = MyJsonParser.getDefault().toJSONString();
-                MyFileHandler.writeToFile(path, obj);
+                create();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -51,6 +49,7 @@ public class UsersProcessor extends Processor {
         return instance;
     }
 
+    @SuppressWarnings("unchecked")
     private void save() {
         var jsonList = new JSONArray();
         for (Staff newsMessage : list) {

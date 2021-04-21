@@ -3,6 +3,8 @@ package de.fhdw.chitter.models;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import de.fhdw.chitter.services.TopicService;
+
 public class NewsMessage {
     private String date;
     private String author;
@@ -42,15 +44,6 @@ public class NewsMessage {
         this.text = text;
     }
 
-    // public NewsMessage(String author, String topic, String headline, String text)
-    // {
-    // this();
-    // this.author = author;
-    // this.topic = topic;
-    // this.headline = headline;
-    // this.text = text;
-    // }
-
     public NewsMessage() {
         SimpleDateFormat sdf_message = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         date = sdf_message.format(System.currentTimeMillis());
@@ -65,7 +58,11 @@ public class NewsMessage {
     }
 
     public ArrayList<String> getTopics() {
-        return topics;
+        return new ArrayList<String>(topics);
+    }
+
+    public ArrayList<String> getAllTopics() {
+        return TopicService.getTopics(this);
     }
 
     public String getHeadline() {
@@ -74,9 +71,5 @@ public class NewsMessage {
 
     public String getText() {
         return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
     }
 }

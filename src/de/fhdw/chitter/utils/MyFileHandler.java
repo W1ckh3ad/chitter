@@ -17,6 +17,7 @@ public class MyFileHandler {
     public static boolean fileExists(String filename) {
         try {
             var useless = new BufferedReader(new FileReader(filename));
+            useless.close();
         } catch (FileNotFoundException e) {
             return false;
         } catch (Exception ioError) {

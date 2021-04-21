@@ -1,57 +1,25 @@
 # project_chitter
 
-## Build / Installation
+## Informationen
 
-Das Projekt baut auf Maven auf [https://maven.apache.org/].
+#### WebServer
 
-### Console
+- http://localhost:8080
 
-Zunächst die Sourcen kombilieren
+##### Path /
 
-```
-$ mvn compile
-```
+- Newsticker
 
-Dann als jar verpacken
+##### Path /api
 
-```
-$ mvn assembly:single
-```
+- Path /api/chitter
 
-
-### IDE
-
-Installation / Build je nach IDE
-
-## Start
-
-Die Main-Class beinhaltet die static main Funktion.
-
-### Console
-
-```
-$ java -jar target/project_chitter-0.0.1-SNAPSHOT-jar-with-dependencies.jar
-```
-
-### IDE
-
-ja nach IDE unterschiedlich
-
-
-
-# Informationen
+  - Path /api/chitter/topics
+    - JSON Object mit allen Topics
+  - Path /api/chitter/{topic}
+    - JSON Object mit den letzen fünf Nachrichten der Topic
 
 #### Beispielbenutzer
 
-- Benutzername: Max
-- Passwort: passwort
-
-#### RestAPI
-- http://localhost:8080/<topic>
- - http://localhost:8080/sport
-  
-#### Newsticker
-
-[newsticker.html]
-
-  
+- Benutzername: Test1
+- Passwort: 12345678aA#

@@ -63,6 +63,7 @@ public class WebSocketServer implements WebSocketHandler {
 		System.out.println("onOpen" + webSocket);
 
 		currentConnection = webSocket;
+		webSocket.write("sbdkas bdsak dbas");
 	}
 
 	@Override

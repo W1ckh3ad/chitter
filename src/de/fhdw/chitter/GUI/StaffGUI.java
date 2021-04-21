@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 import de.fhdw.chitter.models.*;
 import de.fhdw.chitter.processors.MessagesProcessor;
 import de.fhdw.chitter.services.UserService;
-import de.fhdw.chitter.*;
+import de.fhdw.chitter.Newssystem;
 
 public class StaffGUI extends JFrame implements ActionListener {
 
@@ -32,7 +32,6 @@ public class StaffGUI extends JFrame implements ActionListener {
 	private JButton btnLogin;
 
 	private JLabel lblUsermsg;
-	// isLoggedIn passt nicht zum OOP Pattern
 	private boolean isLoggedin = false;
 
 	private MessagesProcessor messagesProcessor = MessagesProcessor.getInstance();
@@ -41,7 +40,7 @@ public class StaffGUI extends JFrame implements ActionListener {
 		this.setTitle("Staff GUI");
 		this.setSize(1000, 620);
 
-		this.setLocation(50, 50);
+		this.setLocation(50, 250);
 		this.setVisible(true);
 
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -154,7 +153,6 @@ public class StaffGUI extends JFrame implements ActionListener {
 		btnSend.setEnabled(false);
 		txtText.setEnabled(false);
 
-		pack();
 	}
 
 	@Override
@@ -182,6 +180,7 @@ public class StaffGUI extends JFrame implements ActionListener {
 			NewsMessage m = new NewsMessage(date, staff, topicStr.split(","), headline, text);
 			messagesProcessor.post(m);
 			Newssystem.getInstance().publish(m);
+			lblUsermsg.setText("NewsMessage send successfully [" + sdf_message + "]");
 		} catch (Exception e) {
 			lblUsermsg.setText(e.getMessage());
 		}

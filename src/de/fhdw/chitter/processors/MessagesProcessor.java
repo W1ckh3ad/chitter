@@ -8,7 +8,6 @@ import de.fhdw.chitter.processors.abstracts.Processor;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,9 +22,7 @@ public class MessagesProcessor extends Processor {
         path = "data/messages.json";
         if (!MyFileHandler.fileExists(path)) {
             try {
-                MyFileHandler.createFile(path);
-                var obj = MyJsonParser.getDefault().toJSONString();
-                MyFileHandler.writeToFile(path, obj);
+                create();
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -92,20 +89,8 @@ public class MessagesProcessor extends Processor {
         return ret;
     }
 
-    // Ähnliche implementierung damit die Laufzeit verbessert wird
     public ArrayList<NewsMessage> get(String topic, int count) {
-        var ret = new ArrayList<NewsMessage>();
-        for (int i = list.size() - 1; i >= 0; i--) {
-            var newsMessage = list.get(i);
-            if (count < 1) {
-                break;
-            }
-            if (newsMessage.getTopics().contains(topic)) {
-                count--;
-                ret.add(newsMessage);
-            }
-        }
-        return ret;
+        return get(topic, count, true);
     }
 
     public ArrayList<NewsMessage> get(int count) {

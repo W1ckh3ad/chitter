@@ -35,7 +35,7 @@ public class RoutingService {
         case "api": {
             switch (pathElems[2]) {
             case "chitter":
-                var controller = new ChitterController(resource);
+                var controller = new ChitterController();
                 if (pathElems.length > 3) {
                     switch (pathElems[3]) {
                     case "topics":

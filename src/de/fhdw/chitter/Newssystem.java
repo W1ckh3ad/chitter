@@ -5,7 +5,7 @@ import java.util.*;
 import de.fhdw.chitter.models.*;
 import de.fhdw.chitter.processors.MessageTypeProcessor;
 import de.fhdw.chitter.receivers.interfaces.Receiver;
-import de.fhdw.chitter.utils.MarkDownParser;
+import de.fhdw.chitter.services.TopicService;
 
 public class Newssystem {
 	public Map<String, Set<Receiver>> receivers = new HashMap<>();
@@ -14,9 +14,7 @@ public class Newssystem {
 	// it from the files
 
 	private Newssystem() {
-		for (String topic : messageTypeProcessor.get()) {
-			this.receivers.put(topic, new HashSet<>());
-		}
+		update();
 	}
 
 	// Zustand Singleton pattern
@@ -28,6 +26,20 @@ public class Newssystem {
 		}
 
 		return instance;
+	}
+
+	public static void start() {
+		if (instance == null) {
+			instance = new Newssystem();
+		}
+	}
+
+	private void update() {
+		for (String topic : messageTypeProcessor.get()) {
+			if (!receivers.containsKey(topic)) {
+				this.receivers.put(topic, new HashSet<>());
+			}
+		}
 	}
 
 	public void register(String topic, Receiver receiver) {
@@ -51,9 +63,9 @@ public class Newssystem {
 	}
 
 	public void publish(NewsMessage msg) {
-		// Todo: Markdown parsing is not the responsibility of news system
-		msg.setText(MarkDownParser.parse(msg.getText()));
-		for (String topic : msg.getTopics()) {
+		update();
+		var topics = TopicService.getTopics(msg);
+		for (String topic : topics) {
 			for (Receiver receiver : this.receivers.get(topic)) {
 				receiver.receiveMessage(msg);
 			}
