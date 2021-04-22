@@ -3,7 +3,7 @@ package de.fhdw.chitter.models;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import de.fhdw.chitter.services.TopicService;
+import de.fhdw.chitter.utils.TopicExtractor;
 
 public class NewsMessage {
     private String date;
@@ -62,7 +62,7 @@ public class NewsMessage {
     }
 
     public ArrayList<String> getAllTopics() {
-        return TopicService.getTopics(this);
+        return TopicExtractor.getTopics(this);
     }
 
     public String getHeadline() {

@@ -18,20 +18,23 @@ import javax.swing.JTextField;
 
 import de.fhdw.chitter.models.*;
 import de.fhdw.chitter.processors.MessagesProcessor;
+import de.fhdw.chitter.services.TopicService;
 import de.fhdw.chitter.services.UserService;
 import de.fhdw.chitter.Newssystem;
 
 public class StaffGUI extends JFrame implements ActionListener {
 
 	private JTextField txtTopic;
-	private JButton btnSend;
 	private JTextField txtHeadline;
 	private JTextArea txtText;
 	private JTextField txtStaff;
 	private JTextField txtPassword;
+	
+	private JButton btnSend;
 	private JButton btnLogin;
 
 	private JLabel lblUsermsg;
+
 	private boolean isLoggedin = false;
 
 	private MessagesProcessor messagesProcessor = MessagesProcessor.getInstance();
@@ -47,7 +50,6 @@ public class StaffGUI extends JFrame implements ActionListener {
 
 		getContentPane().setLayout(new java.awt.BorderLayout());
 
-		// var declaration
 		JPanel topPanel = new JPanel(new FlowLayout());
 		topPanel.add(new JLabel("Name:"));
 		txtStaff = new JTextField(10);
@@ -55,17 +57,14 @@ public class StaffGUI extends JFrame implements ActionListener {
 
 		topPanel.add(txtStaff);
 		topPanel.add(new JLabel("Passwort:"));
-		// variablenName keine txt sondern GUIField
 		txtPassword = new JPasswordField(10);
+		
 		topPanel.add(txtPassword);
-		// LoginManager Verwenden
 		btnLogin = new javax.swing.JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// isLoggedin = Staffsystem.getInstance().checkLogin(txtStaff.getText(),
-				// txtPassword.getText());
 				isLoggedin = UserService.logIn(txtStaff.getText(), txtPassword.getText());
 
 				if (isLoggedin) {
@@ -163,25 +162,23 @@ public class StaffGUI extends JFrame implements ActionListener {
 			return;
 		}
 
+		SimpleDateFormat sdf_message = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+
 		String staff = txtStaff.getText();
 		String topicStr = txtTopic.getText();
 		String headline = txtHeadline.getText();
 		String text = txtText.getText();
-		// date Formater auslagern
-		SimpleDateFormat sdf_message = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-		// constructor
 		String date = sdf_message.format(System.currentTimeMillis());
 
-		// FileWriter verwenden
-		// neue Publishfunktion verwenden
-		// switchcase überflüssig
-		// bessere Variablennamen
 		try {
-			NewsMessage m = new NewsMessage(date, staff, topicStr.split(","), headline, text);
-			messagesProcessor.post(m);
-			Newssystem.getInstance().publish(m);
-			lblUsermsg.setText("NewsMessage send successfully [" + sdf_message + "]");
+			NewsMessage newsMessage = new NewsMessage(date, staff, topicStr.split(","), headline, text);
+
+			TopicService.post(newsMessage.getAllTopics());
+			messagesProcessor.post(newsMessage);
+			Newssystem.getInstance().publish(newsMessage);
+			lblUsermsg.setText("NewsMessage send successfully [" + date + "]");
 		} catch (Exception e) {
+			e.printStackTrace();
 			lblUsermsg.setText(e.getMessage());
 		}
 	}

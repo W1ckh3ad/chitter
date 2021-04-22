@@ -26,19 +26,13 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 	private JButton btnRegister;
 	private JButton btnUnregister;
 	private JTextArea txtText;
-	// unregister Button
-	// Enabled wenn Register Button geklickt
-	// Löscht eventlistener vom RegisterButton
-	// Speichern, für was man sich registriert hat, damit dem Benutzer mitgeteilt
-	// wird, welche Topics unregistert sind
 
 	private MessagesProcessor messagesProcessor = MessagesProcessor.getInstance();
+	private Newssystem newssystem = Newssystem.getInstance();
 
 	public ReceiverGUI() {
-		// Titel Ändern
 		this.setTitle("Receiver GUI");
 		this.setSize(1000, 1620);
-		// this.setResizable(false);
 		this.setLocation(150, 250);
 		this.setVisible(true);
 
@@ -50,7 +44,6 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 		topPanel.add(new JLabel("Topic:"));
 		txtTopic = new JTextField(20);
 		txtTopic.setText("Sport");
-		// var definitions var btnRegister
 		topPanel.add(txtTopic);
 
 		btnRegister = new javax.swing.JButton("Register");
@@ -101,7 +94,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 	}
 
 	private void registerTopic(String topic) {
-		Newssystem.getInstance().register(topic, this);
+		newssystem.register(topic, this);
 		txtText.append("Topic " + topic.toString() + " wurde registriert\n");
 		try {
 			var messages = messagesProcessor.get(topic, 5);
@@ -118,7 +111,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 	}
 
 	private void unregisterTopic(String topic) {
-		Newssystem.getInstance().unregisterAllTopics(this);
+		newssystem.unregisterAllTopics(this);
 		txtText.append("\nTopic " + topic.toString() + " wurde deregistriert\n");
 	}
 
@@ -129,7 +122,7 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 
 	@Override
 	public void dispose() {
-		Newssystem.getInstance().unregisterAllTopics(this);
+		newssystem.unregisterAllTopics(this);
 		super.dispose();
 	}
 }

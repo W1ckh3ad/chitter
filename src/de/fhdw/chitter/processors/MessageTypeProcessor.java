@@ -1,42 +1,25 @@
 package de.fhdw.chitter.processors;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import de.fhdw.chitter.processors.abstracts.Processor;
 import de.fhdw.chitter.utils.MyFileHandler;
-import de.fhdw.chitter.utils.MyJsonParser;
+import de.fhdw.chitter.utils.jsonparser.StringListParser;
 
 public class MessageTypeProcessor extends Processor {
-    private ArrayList<String> list = new ArrayList<>();
     private static MessageTypeProcessor instance;
 
     private MessageTypeProcessor() {
-        path = "data/messageTypes.json";
-        if (!MyFileHandler.fileExists(path)) {
-            try {
-                create();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-
-        try {
-            list = transform();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        super("data/messageTypes.json");
     }
 
-    private void save() {
-        var array = MyJsonParser.convertStringListToJsonArray(list);
-        var obj = (JSONObject) MyJsonParser.getDefault(array);
+    private void save(ArrayList<String> list) {
+        var array = StringListParser.convertToJsonArray(list);
+        var obj = (JSONObject) StringListParser.getDefault(array);
         try {
             MyFileHandler.writeToFile(path, obj.toJSONString());
         } catch (IOException e) {
@@ -44,10 +27,15 @@ public class MessageTypeProcessor extends Processor {
         }
     }
 
-    private ArrayList<String> transform() throws ParseException, FileNotFoundException, IOException {
-        JSONObject obj = read();
-        JSONArray types = (JSONArray) obj.get("data");
-        return MyJsonParser.convertJsonObjectToStringList(types);
+    private ArrayList<String> transform() {
+        try {
+            JSONObject obj = read();
+            JSONArray types = (JSONArray) obj.get("data");
+            return StringListParser.convertFromJsonObject(types);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<String>();
+        }
     }
 
     public static MessageTypeProcessor getInstance() {
@@ -58,15 +46,14 @@ public class MessageTypeProcessor extends Processor {
     }
 
     public ArrayList<String> get() {
-        return list;
+        return transform();
     }
 
     public void post(ArrayList<String> types) {
+        var list = transform();
         for (String string : types) {
-            if (!list.contains(string)) {
-                list.add(string);
-            }
+            list.add(string);
         }
-        save();
+        save(list);
     }
 }

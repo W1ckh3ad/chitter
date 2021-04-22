@@ -11,6 +11,9 @@ import org.atmosphere.websocket.WebSocket;
 import org.atmosphere.websocket.WebSocketHandler;
 import org.atmosphere.websocket.WebSocketProcessor.WebSocketException;
 
+import de.fhdw.chitter.receivers.WebSocketReceiver;
+import de.fhdw.chitter.services.WebSocketConnectionService;
+
 // import de.fhdw.chitter.models.NewsMessage;
 
 //https://github.com/Atmosphere/nettosphere
@@ -19,22 +22,15 @@ public class WebSocketServer implements WebSocketHandler {
 
 	private Nettosphere server;
 
-	public WebSocket currentConnection;
+	private WebSocketConnectionService connections;
+	private WebSocketReceiver receiver;
 
-	public static WebSocketServer instance;
-
-	public static WebSocketServer getInstance() {
-		if (instance == null) {
-			instance = new WebSocketServer("127.0.0.1", 8081);
-		}
-
-		return instance;
-	}
-
-	private WebSocketServer(String address, int port) {
+	public WebSocketServer(String address, int port) {
 		server = new Nettosphere.Builder()
 				.config(new Config.Builder().host(address).port(port).resource("/*", this).build()).build();
-
+		connections = new WebSocketConnectionService();
+		receiver = new WebSocketReceiver(connections);
+		receiver.register();
 	}
 
 	public void start() {
@@ -43,32 +39,30 @@ public class WebSocketServer implements WebSocketHandler {
 
 	@Override
 	public void onByteMessage(WebSocket webSocket, byte[] data, int offset, int length) throws IOException {
-		System.out.println("onByteMessage" + data);
+		System.out.println("\n\nonByteMessage" + data);
 	}
 
 	@Override
 	public void onClose(WebSocket webSocket) {
-		System.out.println("onClose" + webSocket);
-
-		currentConnection = null;
+		System.out.println("\n\nonClose" + webSocket);
+		connections.remove(webSocket);
 	}
 
 	@Override
 	public void onError(WebSocket webSocket, WebSocketException t) {
-		System.out.println("onError" + webSocket);
+		t.printStackTrace();
+		System.out.println("\n\nonError" + webSocket);
 	}
 
 	@Override
 	public void onOpen(WebSocket webSocket) throws IOException {
-		System.out.println("onOpen" + webSocket);
-
-		currentConnection = webSocket;
-		webSocket.write("sbdkas bdsak dbas");
+		System.out.println("\n\nonOpen" + webSocket);
+		connections.add(webSocket);
 	}
 
 	@Override
 	public void onTextMessage(WebSocket webSocket, String data) throws IOException {
-		System.out.println("onTextMessage" + data);
+		System.out.println("\n\nonTextMessage" + data);
 	}
 
 }

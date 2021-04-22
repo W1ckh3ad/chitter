@@ -9,37 +9,13 @@ import org.json.simple.JSONObject;
 import de.fhdw.chitter.models.Staff;
 import de.fhdw.chitter.processors.abstracts.Processor;
 import de.fhdw.chitter.utils.MyFileHandler;
-import de.fhdw.chitter.utils.MyJsonParser;
+import de.fhdw.chitter.utils.jsonparser.StaffParser;
 
 public class UsersProcessor extends Processor {
-    private ArrayList<Staff> list = new ArrayList<>();
-
     private static UsersProcessor instance;
 
     private UsersProcessor() {
-        path = "data/users.json";
-        if (!MyFileHandler.fileExists(path)) {
-            try {
-                create();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-
-        JSONObject obj;
-        JSONArray staff;
-        try {
-            obj = read();
-            staff = (JSONArray) obj.get("data");
-            for (Object object : staff) {
-                var jsonObj = (JSONObject) object;
-                list.add(MyJsonParser.convertJsonObjectToStaff(jsonObj));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        super("data/users.json");
     }
 
     public static UsersProcessor getInstance() {
@@ -50,16 +26,16 @@ public class UsersProcessor extends Processor {
     }
 
     @SuppressWarnings("unchecked")
-    private void save() {
+    private void save(ArrayList<Staff> list) {
         var jsonList = new JSONArray();
         for (Staff newsMessage : list) {
             try {
-                jsonList.add(MyJsonParser.convertStaffToJsonObject(newsMessage));
+                jsonList.add(StaffParser.convertToJsonObject(newsMessage));
             } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }
-        var obj = (JSONObject) MyJsonParser.getDefault(jsonList);
+        var obj = (JSONObject) StaffParser.getDefault(jsonList);
         try {
             MyFileHandler.writeToFile(path, obj.toJSONString());
         } catch (IOException e) {
@@ -67,11 +43,23 @@ public class UsersProcessor extends Processor {
         }
     }
 
+    private ArrayList<Staff> transform() {
+        try {
+            JSONObject obj = read();
+            JSONArray staffList = (JSONArray) obj.get("data");
+            return StaffParser.convertJsonObjectToList(staffList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<Staff>();
+        }
+    }
+
     public ArrayList<Staff> get() {
-        return list;
+        return transform();
     }
 
     public Staff get(String username) {
+        var list = transform();
         for (Staff staff : list) {
             if (staff.getUsername().equals(username)) {
                 return staff;
@@ -81,7 +69,8 @@ public class UsersProcessor extends Processor {
     }
 
     public void post(Staff staff) {
+        var list = transform();
         list.add(staff);
-        save();
+        save(list);
     }
 }

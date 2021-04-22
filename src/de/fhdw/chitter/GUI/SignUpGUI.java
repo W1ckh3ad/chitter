@@ -21,7 +21,6 @@ public class SignUpGUI extends JFrame implements ActionListener {
     private JTextField txtNewUsername;
     private JTextField txtNewPassword;
     private JTextField txtNewPasswordConfirm;
-
     private JTextField txtStaff;
     private JTextField txtPassword;
 
@@ -29,6 +28,7 @@ public class SignUpGUI extends JFrame implements ActionListener {
     private JButton btnSignUp;
 
     private JLabel lblUsermsg;
+
     private boolean isLoggedin = false;
 
     public SignUpGUI() {

@@ -6,28 +6,17 @@ import java.io.InputStreamReader;
 import de.fhdw.chitter.extern.WebServer;
 import de.fhdw.chitter.extern.WebSocketServer;
 import de.fhdw.chitter.gui.AdminGUI;
-import de.fhdw.chitter.receivers.WebSocketReceiver;
-
-// Directories
-// Models (für DTO)
-// GUI (Admin GUI, RecieverGUI, StaffGUI)
-// extern (ordner bleibt)
-// utils (MDParse, FileWriter, Filereader, Logger)
-// controller (Benutzercontroller, TopicController, MessageController)
-// 
 
 public class Main {
 	public static void main(String[] args) {
 		Newssystem.start();
-		WebServer server = new WebServer("127.0.0.1", 8080);
-		server.start();
 
-		WebSocketServer wsServer = WebSocketServer.getInstance();
-		wsServer.start();
+		WebServer webServer = new WebServer("127.0.0.1", 8080);
+		webServer.start();
 
-		WebSocketReceiver.getInstance().register();
+		WebSocketServer webSocketServer = new WebSocketServer("127.0.0.1", 8081);
+		webSocketServer.start();
 
-		// start gui
 		new AdminGUI();
 
 		BufferedReader readUConsole = new BufferedReader(new InputStreamReader(System.in));

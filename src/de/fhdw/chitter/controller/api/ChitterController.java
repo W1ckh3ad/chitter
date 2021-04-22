@@ -4,7 +4,7 @@ package de.fhdw.chitter.controller.api;
 
 import de.fhdw.chitter.processors.MessageTypeProcessor;
 import de.fhdw.chitter.processors.MessagesProcessor;
-import de.fhdw.chitter.utils.MyJsonParser;
+import de.fhdw.chitter.utils.jsonparser.*;
 
 public class ChitterController {
     // private AtmosphereResource resource;
@@ -17,19 +17,19 @@ public class ChitterController {
 
     public String index() {
         var messages = messagesProcessor.get(5);
-        var obj = MyJsonParser.getDefault(MyJsonParser.convertNewsMessageListToJsonArray(messages));
+        var obj = NewsMessageParser.getDefault(NewsMessageParser.convertListToJsonArray(messages));
         return obj.toJSONString();
     }
 
     public String index(String topic) {
         var messages = messagesProcessor.get(topic, 5, true);
-        var obj = MyJsonParser.getDefault(MyJsonParser.convertNewsMessageListToJsonArray(messages));
+        var obj = NewsMessageParser.getDefault(NewsMessageParser.convertListToJsonArray(messages));
         return obj.toJSONString();
     }
 
     public String topics() {
         var topics = messageTypeProcessor.get();
-        var obj = MyJsonParser.getDefault(MyJsonParser.convertStringListToJsonArray(topics));
+        var obj = StringListParser.getDefault(StringListParser.convertToJsonArray(topics));
         return obj.toJSONString();
     }
 }

@@ -20,8 +20,8 @@ public class MyFileHandler {
             useless.close();
         } catch (FileNotFoundException e) {
             return false;
-        } catch (Exception ioError) {
-            ioError.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;

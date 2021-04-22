@@ -8,10 +8,23 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import de.fhdw.chitter.utils.MyFileHandler;
-import de.fhdw.chitter.utils.MyJsonParser;
+import de.fhdw.chitter.utils.jsonparser.abstracts.Parser;
 
 public abstract class Processor {
     protected String path;
+
+    public Processor(String path) {
+        this.path = path;
+        if (!MyFileHandler.fileExists(path)) {
+            try {
+                create();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+
+    }
 
     protected JSONObject read() throws ParseException, FileNotFoundException, IOException {
         var parser = new JSONParser();
@@ -20,7 +33,7 @@ public abstract class Processor {
 
     protected void create() throws ParseException, FileNotFoundException, IOException {
         MyFileHandler.createFile(path);
-        var obj = MyJsonParser.getDefault().toJSONString();
+        var obj = Parser.getDefault().toJSONString();
         MyFileHandler.writeToFile(path, obj);
     }
 

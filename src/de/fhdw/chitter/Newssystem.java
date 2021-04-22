@@ -5,19 +5,16 @@ import java.util.*;
 import de.fhdw.chitter.models.*;
 import de.fhdw.chitter.processors.MessageTypeProcessor;
 import de.fhdw.chitter.receivers.interfaces.Receiver;
-import de.fhdw.chitter.services.TopicService;
+import de.fhdw.chitter.utils.TopicExtractor;
 
 public class Newssystem {
 	public Map<String, Set<Receiver>> receivers = new HashMap<>();
 	private MessageTypeProcessor messageTypeProcessor = MessageTypeProcessor.getInstance();
-	// Todo: We should add a history of news messages and add a method to initialize
-	// it from the files
 
 	private Newssystem() {
 		update();
 	}
 
-	// Zustand Singleton pattern
 	private static Newssystem instance;
 
 	public static Newssystem getInstance() {
@@ -64,7 +61,7 @@ public class Newssystem {
 
 	public void publish(NewsMessage msg) {
 		update();
-		var topics = TopicService.getTopics(msg);
+		var topics = TopicExtractor.getTopics(msg);
 		for (String topic : topics) {
 			for (Receiver receiver : this.receivers.get(topic)) {
 				receiver.receiveMessage(msg);

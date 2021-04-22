@@ -16,11 +16,9 @@ public class AdminGUI extends JFrame {
 	private JButton btnSignUp;
 	private JButton btnExit;
 
-	// ist ok
 	public AdminGUI() {
 		this.setTitle("Admin GUI");
 		this.setSize(1000, 620);
-		// this.setResizable(false);
 		this.setLocation(50, 50);
 		this.setVisible(true);
 

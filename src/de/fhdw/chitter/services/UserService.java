@@ -44,14 +44,14 @@ public class UserService {
         for (CharacterVal characterVal : rules) {
             var min = characterVal.getMin();
             var max = characterVal.getMax();
-            var chars = characterVal.getCharacters();
+            var characters = characterVal.getCharacters();
             var name = characterVal.getName();
-            if (chars != null) {
-                if (validateCharsWithMinMax(password, chars, min, max)) {
+            if (characters != null) {
+                if (validateCharsWithMinMax(password, characters, min, max)) {
                     continue;
                 } else {
                     throw new Exception(
-                            "Error Rule (" + name + "), needs (" + chars + ") min(" + min + ") max(" + max + ")");
+                            "Error Rule (" + name + "), needs (" + characters + ") min(" + min + ") max(" + max + ")");
                 }
             } else if (min != null && max != null) {
                 var length = password.length();
