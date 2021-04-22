@@ -12,10 +12,11 @@ import de.fhdw.chitter.utils.jsonparser.abstracts.Parser;
 
 public abstract class Processor {
     protected String path;
+    protected static MyFileHandler fileHandler = new MyFileHandler();
 
     public Processor(String path) {
         this.path = path;
-        if (!MyFileHandler.fileExists(path)) {
+        if (!fileHandler.fileExists(path)) {
             try {
                 create();
             } catch (Exception e) {
@@ -28,13 +29,13 @@ public abstract class Processor {
 
     protected JSONObject read() throws ParseException, FileNotFoundException, IOException {
         var parser = new JSONParser();
-        return (JSONObject) parser.parse(MyFileHandler.readFromFile(path));
+        return (JSONObject) parser.parse(fileHandler.readFromFile(path));
     }
 
     protected void create() throws ParseException, FileNotFoundException, IOException {
-        MyFileHandler.createFile(path);
+        fileHandler.createFile(path);
         var obj = Parser.getDefault().toJSONString();
-        MyFileHandler.writeToFile(path, obj);
+        fileHandler.writeToFile(path, obj);
     }
 
 }

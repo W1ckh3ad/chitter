@@ -1,6 +1,5 @@
 package de.fhdw.chitter.processors;
 
-import de.fhdw.chitter.utils.MyFileHandler;
 import de.fhdw.chitter.utils.jsonparser.NewsMessageParser;
 import de.fhdw.chitter.models.NewsMessage;
 import de.fhdw.chitter.processors.abstracts.Processor;
@@ -40,7 +39,7 @@ public class MessagesProcessor extends Processor {
         var jsonList = NewsMessageParser.convertListToJsonArray(list);
         var obj = (JSONObject) NewsMessageParser.getDefault(jsonList);
         try {
-            MyFileHandler.writeToFile(path, obj.toJSONString());
+            fileHandler.writeToFile(path, obj.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -7,7 +7,7 @@ import de.fhdw.chitter.utils.MyFileHandler;
 
 public class RoutingService {
     private AtmosphereResource resource;
-
+    private MyFileHandler fileHandler = new MyFileHandler();
     private String api404() {
         var response = resource.getResponse();
         response.setStatus(404);
@@ -25,7 +25,7 @@ public class RoutingService {
         if (pathElems.length == 0) {
             var ret = "";
             try {
-                ret = MyFileHandler.readFromFile("src/de/fhdw/chitter/views/newsticker.html");
+                ret = fileHandler.readFromFile("src/de/fhdw/chitter/views/newsticker.html");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -53,7 +53,7 @@ public class RoutingService {
         default: {
             var ret = "";
             try {
-                ret = MyFileHandler.readFromFile("src/de/fhdw/chitter/views/newsticker.html");
+                ret = fileHandler.readFromFile("src/de/fhdw/chitter/views/newsticker.html");
             } catch (Exception e) {
                 e.printStackTrace();
             }

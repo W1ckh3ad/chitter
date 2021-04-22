@@ -1,0 +1,420 @@
+@startuml
+package "CHITTER"
+{
+interface Handler {
++void handle(AtmosphereResource r)
+}
+
+
+class JFrame{
+}
+
+
+interface ActionListener{
++void actionPerformed(ActionEvent e)
+}
+
+
+class WebServer extends Handler {
+-Nettosphere server
++ WebServer(String address, int port)
++void start()
+ +void handle()
+}
+WebServer --> RoutingService
+
+interface WebSocketHandler{
+  +void onByteMessage(WebSocket webSocket, byte[] data, int offset, int length) throws IOException
+  +void onClose(WebSocket webSocket)
+  +void onError(WebSocket webSocket, WebSocketException t)
+  +void onOpen(WebSocket webSocket) throws IOException
+  +void onTextMessage(WebSocket webSocket, String data) throws IOException 
+}
+
+class WebSocketServer implements WebSocketHandler {
+  -Nettosphere server
+- WebSocketConnectionService connections;
+- WebSocketReceiver receiver;
++WebSocketServer()
+  +void start()
+  +void onByteMessage(WebSocket webSocket, byte[] data, int offset, int length) throws IOException
+  +void onClose(WebSocket webSocket)
+  +void onError(WebSocket webSocket, WebSocketException t)
+  +void onOpen(WebSocket webSocket) throws IOException
+  +void onTextMessage(WebSocket webSocket, String data) throws IOException 
+}
+
+WebSocketServer --o WebSocketConnectionService
+WebSocketServer --o WebSocketReceiver
+
+Newssystem --o Receiver
+
+class Newssystem {
+-Map<String, Set<Receiver>> receivers;
+-MessageTypeProcessor messageTypeProcessor;
+-Newssystem()
+
+-{static} Newssystem instance
++{static} Newssystem getInstance()
+-void update
++ void start
++void register(String topic, Receiver receiver)
++ void unregister(String topic, Receiver receiver)
++ void registerAllTopics(Receiver receiver)
++void unregisterAllTopics(Receiver receiver)
++void publish(Newsmessage newsMessage)
+}
+
+Newssystem --o Receiver
+Newssystem --o MessageTypeProcessor
+Newssystem --> NewsMessage
+
+
+class NewsMessage {
+-String date
+-String author
+-String topic
+-tring headline
+-String text
++NewsMessage(String date, String author, ArrayList<String> topics, String headline)
+-NewsMessage(String date, String author, String headline)
++ NewsMessage(String date, String author, ArrayList<String> topics, String headline, String text)
++NewsMessage(String date, String author, String[] topics, String headline)
++NewsMessage(String date, String author, String[] topics, String headline, String text)
++String getDate()
++String getAuthor()
++ArrayList<String> getTopics()
++ArrayList<String> getAllTopics()
++String getHeadline()
++String getText()
+}
+NewsMessage --> TopicExtractor
+
+interface Receiver{
+void receiveMessage(NewsMessage newsMessage)
+}
+
+class ConsoleReceiver implements Receiver {
++ void receiveMessage(NewsMessage newsMessage);
+}
+ConsoleReceiver --> NewsMessage
+class WebSocketReceiver implements Receiver {
+-WebSocketConnectionService service
+-Newssystem newssystem
++WebSocketReceiver(WebSocketConnectionService)
++void register()
++void receiveMessage(NewsMessage newsMessage)
+}
+WebSocketReceiver  --o WebSocketConnectionService
+WebSocketReceiver  --o Newssystem
+WebSocketReceiver --> NewsMessage
+
+class Staff{
+-String username
+-String password
++Staff(String username, String password)
++ String getUsername()
++ String getPassword()
+}
+
+class CharacterVal {
+-String name;
+-Integer min;
+-Integer max;
+-String characters;
+
+    + String getName() 
+
+    + Integer getMin()
+
+    +Integer getMax() 
+
+    +String getCharacters()
+
+    +CharacterVal(String name, Integer min, Integer max, String chars)
+}
+
+class UserConfig {
+-Integer maxUsers;
+    -ArrayList<CharacterVal> rules;
+
+    +int getMaxUsers()
+
+    +ArrayList<CharacterVal> getRules()
+
+    +UserConfig(Integer maxUsers, ArrayList<CharacterVal> rules)
+}
+
+class AdminGUI extends JFrame{
+-JButton btnNewStaff
+-JButton btnNewReceiver
+-JButton btnExit
++AdminGUI()
+}
+AdminGUI --> ReceiverGUI
+AdminGUI --> StaffGUI
+AdminGUI --> SignUpGUI
+
+class ReceiverGUI extends JFrame implements ActionListener{
+-JTextField txtTopic
+-JButton btnRegister
+-JTextArea txtText
+-MessagesProcessor messagesProcessor
+-Newssystem newssystem
++ReceiverGUI()
++void actionPerformed(ActionEvent arg0)
+-void registerTopic(String topic)
+-void unregisterTopic(String topic)
+-void receiveMessage(NewsMessage msg)
++void dispose()
+}
+ReceiverGUI --o MessagesProcessor
+ReceiverGUI --o Newssystem
+ReceiverGUI --> NewsMessage
+ReceiverGUI --> MyMessageFormatter
+
+class StaffGUI extends JFrame implements ActionListener{
+-JTextField txtTopic
+-JButton btnSend
+-JTextField txtHeadline
+-JTextArea txtText
+-JTextField txtStaff
+-JTextField txtPassword
+-JButton btnLogin	
+-JLabel lblUsermsg
+-boolean isLoggedin = false	
+-MessagesProcessor messagesProcessor
++StaffGUI()
++void actionPerformed(ActionEvent arg0)
+
+}
+StaffGUI --o MessagesProcessor
+StaffGUI --> TopicService
+StaffGUI --> NewsMessage
+StaffGUI --> Staff
+StaffGUI --> Newssystem
+StaffGUI --> UserService
+
+class SignUpGUI extends JFrame implements ActionListener {
+   -JTextField txtNewUsername;
+    -JTextField txtNewPassword;
+    -JTextField txtNewPasswordConfirm;
+    -JTextField txtStaff;
+    -JTextField txtPassword;
+
+    -JButton btnLogin;
+    -JButton btnSignUp;
+
+    -JLabel lblUsermsg;
+
+    -boolean isLoggedin = false;
++ SignUpGUI();
++ ActionPerformed(ActionEvent arg0)
+}
+StaffGUI --> UserService
+
+
+abstract class Processor{
+#String path
++ Processor(String path)
+# JSONObject read();
+# void create();
+}
+
+class MessagesProcessor extends Processor{
+- {static} MessageProcessor instance;
++ {static} MessagesProcessor getInstance();
+- MessagesProcessor();
+- ArrayList<NewsMessage> transform();
+- void save();
++ ArrayList<NewsMessage> get();
++ ArrayList<NewsMessage> get(String topic, int count, boolean caseSensitive);
++ ArrayList<NewsMessage> get(String topic, int count);
++ ArrayList<NewsMessage> get(int count);
++ void post(NewsMessage message);
+}
+MessagesProcessor --> NewsMessageParser
+MessagesProcessor --> NewsMessage
+
+class MessageTypeProcessor extends Processor {
+- {static} MessageTypeProcessor instance;
++ {static} MessageTypeProcessor getInstance();
+- MessageTypeProcessor ();
+- ArrayList<String> transform();
+- void save();
++ ArrayList<String> get();
++ void post(ArrayList<String> types);
+}
+MessageTypeProcessor --> StringListParser
+
+class UsersProcessor extends Processor {
+- {static}  UsersProcessor instance;
++ {static} UsersProcessor getInstance();
+- UsersProcessor ();
+- ArrayList<Staff> transform();
+- void save();
++ ArrayList<String> get();
++ ArrayList<String> get(String username);
++ void post(Staff staff);
+}
+
+UsersProcessor  --> Staff
+UsersProcessor  --> StaffParser
+
+class ChitterController {
+-MessagesProcessor messagesProcessor = MessagesProcessor.getInstance();
+    -MessageTypeProcessor messageTypeProcessor
+    +String index() 
+    +String index(String topic)
+    +String topics()
+}
+ChitterController --o MessagesProcessor
+ChitterController --o MessageTypeProcessor
+ChitterController --> NewsMessageParser
+ChitterController --> StringListParser
+
+class RoutingService {
+-AtmosphereResource resource;
+    - MyFileHandler fileHandler = new MyFileHandler();
+    -String api404()
+    +RoutingService(AtmosphereResource resource) 
+    +String route()
+}
+
+RoutingService --o MyFileHandler
+RoutingService --> ChitterController
+
+class TopicService {
+
+    +{static} void post(ArrayList<String> param)
+}
+TopicService --> MessageTypeProcessor
+
+ class UserService {
+    -{static} UsersProcessor usersProcessor 
+
+    -{static} String encryptPassword(String password)
+
+    +{static} boolean logIn(String username, String password) 
+
+    +{static} boolean signUp(String username, String password) throws Exception 
+
+    - {static} void validatePassword(String password) throws Exception 
+
+    - {static} int getCharCount(String string, String chars) 
+
+    -{static} boolean validateCharsWithMinMax(String string, String chars, Integer min, Integer max) 
+}
+
+UserService --o UserProcessor
+UserService --> CharacterVal
+UserService --> Staff
+UserService -->UserConfigParser
+
+class WebSocketConnectionService {
+
+    -ArrayList<WebSocket> connections;
+
+    +WebSocketConnectionService()
+
+    +void add(WebSocket webSocket)
+
+    +void remove(WebSocket webSocket) 
+
+    +ArrayList<WebSocket> get() 
+}
+WebSocketConnectionService --> NewsMessage
+WebSocketConnectionService --> MessagesProcessor
+WebSocketConnectionService  --> MyMessageFormatter
+
+abstract class Parser {
+    +{static} JSONObject getDefault()
+    +{static} JSONObject getDefault(JSONArray array)
+}
+
+class NewsMessageParser extends Parser {
+
+    +{static} JSONObject convertToJsonObject(NewsMessage model) 
+
+    +{static} NewsMessage convertFromJsonObject(JSONObject obj)
+
+    +{static} JSONArray convertListToJsonArray(ArrayList<NewsMessage> list) 
+
+    +{static} ArrayList<NewsMessage> convertJsonObjectToList(JSONArray array) 
+}
+NewsMessageParser --> NewsMessage
+
+class StaffParser extends Parser {
+    +{static} JSONArray converListToJsonArray(ArrayList<Staff> list) 
+
+    +{static} ArrayList<Staff> convertJsonObjectToList(JSONArray array)
+
+    +{static} JSONObject convertToJsonObject(Staff model) 
+
+    +{static} Staff convertFromJsonObject(JSONObject obj) 
+
+}
+NewsMessageParser --> Staff
+class StringListParser extends Parser {
+    +{static} JSONArray convertToJsonArray(ArrayList<String> list)
+
+    +{static} ArrayList<String> convertFromJsonObject(JSONArray array) 
+}
+
+class MyFileHandler {
+
++Path convertStringToPath(String path)
+    +boolean fileExists(String filename) 
+
+    +void createFile(File file) throws IOException 
+
+    +void createFile(String filename) throws IOException
+
+    +void createFileWithDirectory(String filename) 
+
+    +String readFromFile(String filename) throws IOException 
+
+    +void writeToFile(String filename, String string) throws IOException
+
+    +String[] getFileNames(String dir) 
+}
+
+class MyMarkDownParser {
+    +{static} String parse(String text) 
+}
+
+class MyMessageFormatter {
+    +{static} String toHtml(NewsMessage message)
+
+    +{static} String toString(NewsMessage message)
+}
+MyMessageFormatter --> NewsMessage
+
+class TopicExtractor {
+
+    +{static} ArrayList<String> getTopics(NewsMessage message)
+}
+
+class UserConfigParser {
+
+    +{static} int getMaxUserCount() 
+    +{static} ArrayList<CharacterVal> getPasswordRules() 
+
+    -{static} UserConfig read() 
+
+}
+UserConfigParser --> CharacterVal
+UserConfigParser --> UserConfig
+
+class Main {
++ main(String[] args)
+
+}
+Main --> Newssystem
+Main --> AdminGUI
+Main --> WebSocketServer
+Main --> WebServer
+
+
+}
+@enduml

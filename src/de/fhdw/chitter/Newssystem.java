@@ -2,10 +2,9 @@ package de.fhdw.chitter;
 
 import java.util.*;
 
-import de.fhdw.chitter.models.*;
+import de.fhdw.chitter.models.NewsMessage;
 import de.fhdw.chitter.processors.MessageTypeProcessor;
 import de.fhdw.chitter.receivers.interfaces.Receiver;
-import de.fhdw.chitter.utils.TopicExtractor;
 
 public class Newssystem {
 	public Map<String, Set<Receiver>> receivers = new HashMap<>();
@@ -18,10 +17,7 @@ public class Newssystem {
 	private static Newssystem instance;
 
 	public static Newssystem getInstance() {
-		if (instance == null) {
-			instance = new Newssystem();
-		}
-
+		start();
 		return instance;
 	}
 
@@ -59,12 +55,12 @@ public class Newssystem {
 		}
 	}
 
-	public void publish(NewsMessage msg) {
+	public void publish(NewsMessage newsMessage) {
 		update();
-		var topics = TopicExtractor.getTopics(msg);
+		var topics = newsMessage.getAllTopics();
 		for (String topic : topics) {
 			for (Receiver receiver : this.receivers.get(topic)) {
-				receiver.receiveMessage(msg);
+				receiver.receiveMessage(newsMessage);
 			}
 		}
 	}

@@ -4,7 +4,8 @@ package de.fhdw.chitter.controller.api;
 
 import de.fhdw.chitter.processors.MessageTypeProcessor;
 import de.fhdw.chitter.processors.MessagesProcessor;
-import de.fhdw.chitter.utils.jsonparser.*;
+import de.fhdw.chitter.utils.jsonparser.NewsMessageParser;
+import de.fhdw.chitter.utils.jsonparser.StringListParser;
 
 public class ChitterController {
     // private AtmosphereResource resource;

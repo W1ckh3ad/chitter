@@ -10,11 +10,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class MyFileHandler {
-    public static Path convertStringToPath(String path) {
+    public Path convertStringToPath(String path) {
         return Paths.get(path);
     }
 
-    public static boolean fileExists(String filename) {
+    public boolean fileExists(String filename) {
         try {
             var useless = new BufferedReader(new FileReader(filename));
             useless.close();
@@ -27,7 +27,7 @@ public class MyFileHandler {
         return true;
     }
 
-    public static void createFile(File file) throws IOException {
+    public void createFile(File file) throws IOException {
         if (file.createNewFile()) {
             System.out.println("File created: " + file.getName());
         } else {
@@ -35,12 +35,12 @@ public class MyFileHandler {
         }
     }
 
-    public static void createFile(String filename) throws IOException {
+    public void createFile(String filename) throws IOException {
         var file = new File(filename);
         createFile(file);
     }
 
-    public static void createFileWithDirectory(String filename) {
+    public void createFileWithDirectory(String filename) {
         try {
             File file = new File(filename);
             var pathesWithFile = filename.split("/");
@@ -60,15 +60,15 @@ public class MyFileHandler {
         }
     }
 
-    public static String readFromFile(String filename) throws IOException {
+    public String readFromFile(String filename) throws IOException {
         return Files.readString(convertStringToPath(filename));
     }
 
-    public static void writeToFile(String filename, String string) throws IOException {
+    public void writeToFile(String filename, String string) throws IOException {
         Files.writeString(convertStringToPath(filename), string);
     }
 
-    public static String[] getFileNames(String dir) {
+    public String[] getFileNames(String dir) {
         return new File(dir).list();
     }
 }

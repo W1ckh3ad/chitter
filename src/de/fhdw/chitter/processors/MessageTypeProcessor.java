@@ -7,7 +7,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import de.fhdw.chitter.processors.abstracts.Processor;
-import de.fhdw.chitter.utils.MyFileHandler;
 import de.fhdw.chitter.utils.jsonparser.StringListParser;
 
 public class MessageTypeProcessor extends Processor {
@@ -21,7 +20,7 @@ public class MessageTypeProcessor extends Processor {
         var array = StringListParser.convertToJsonArray(list);
         var obj = (JSONObject) StringListParser.getDefault(array);
         try {
-            MyFileHandler.writeToFile(path, obj.toJSONString());
+            fileHandler.writeToFile(path, obj.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -8,7 +8,6 @@ import org.json.simple.JSONObject;
 
 import de.fhdw.chitter.models.Staff;
 import de.fhdw.chitter.processors.abstracts.Processor;
-import de.fhdw.chitter.utils.MyFileHandler;
 import de.fhdw.chitter.utils.jsonparser.StaffParser;
 
 public class UsersProcessor extends Processor {
@@ -37,7 +36,7 @@ public class UsersProcessor extends Processor {
         }
         var obj = (JSONObject) StaffParser.getDefault(jsonList);
         try {
-            MyFileHandler.writeToFile(path, obj.toJSONString());
+            fileHandler.writeToFile(path, obj.toJSONString());
         } catch (IOException e) {
             e.printStackTrace();
         }

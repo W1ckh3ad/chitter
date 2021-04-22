@@ -15,10 +15,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import de.fhdw.chitter.models.NewsMessage;
-import de.fhdw.chitter.processors.*;
+import de.fhdw.chitter.processors.MessagesProcessor;
 import de.fhdw.chitter.receivers.interfaces.Receiver;
 import de.fhdw.chitter.utils.MyMessageFormatter;
-import de.fhdw.chitter.*;
+import de.fhdw.chitter.Newssystem;
 
 public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 

@@ -1,6 +1,5 @@
 package de.fhdw.chitter.models;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import de.fhdw.chitter.utils.TopicExtractor;
@@ -42,11 +41,6 @@ public class NewsMessage {
     public NewsMessage(String date, String author, String[] topics, String headline, String text) {
         this(date, author, topics, headline);
         this.text = text;
-    }
-
-    public NewsMessage() {
-        SimpleDateFormat sdf_message = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        date = sdf_message.format(System.currentTimeMillis());
     }
 
     public String getDate() {
