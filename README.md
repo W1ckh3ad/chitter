@@ -1,25 +1,32 @@
 # project_chitter
 
+## Autoren
+- Jannik Decker
+- Christopher Gdynia
+- Tom Schiller
+
 ## Informationen
 
-#### WebServer
+### WebServer
 
 - http://localhost:8080
 
-##### Path /
+#### Path /
 
 - Newsticker
 
-##### Path /api
+#### Path /api
 
-- Path /api/chitter
+##### Path /api/chitter
 
   - Path /api/chitter/topics
     - JSON Object mit allen Topics
   - Path /api/chitter/{topic}
     - JSON Object mit den letzen fünf Nachrichten der Topic
 
-#### Beispielbenutzer
+### Beispielbenutzer
+- Benutzername: Max
+- Passwort: passwort
 
 - Benutzername: Test1
 - Passwort: 12345678aA#
