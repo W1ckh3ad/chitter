@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-public class MessagesProcessor extends Processor {
+public final class MessagesProcessor extends Processor<NewsMessage> {
 
     private static MessagesProcessor instance;
 
@@ -25,7 +25,8 @@ public class MessagesProcessor extends Processor {
         return instance;
     }
 
-    private ArrayList<NewsMessage> transform() {
+    @Override
+    protected ArrayList<NewsMessage> transform() {
         try {
             JSONArray messages = (JSONArray) read().get("data");
             return NewsMessageParser.convertJsonObjectToList(messages);
@@ -35,7 +36,8 @@ public class MessagesProcessor extends Processor {
         }
     }
 
-    private void save(ArrayList<NewsMessage> list) {
+    @Override
+    protected void save(ArrayList<NewsMessage> list) {
         var jsonList = NewsMessageParser.convertListToJsonArray(list);
         var obj = (JSONObject) NewsMessageParser.getDefault(jsonList);
         try {

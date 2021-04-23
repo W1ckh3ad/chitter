@@ -10,7 +10,7 @@ import de.fhdw.chitter.models.Staff;
 import de.fhdw.chitter.processors.abstracts.Processor;
 import de.fhdw.chitter.utils.jsonparser.StaffParser;
 
-public class UsersProcessor extends Processor {
+public final class UsersProcessor extends Processor<Staff> {
     private static UsersProcessor instance;
 
     private UsersProcessor() {
@@ -24,8 +24,9 @@ public class UsersProcessor extends Processor {
         return instance;
     }
 
+    @Override
     @SuppressWarnings("unchecked")
-    private void save(ArrayList<Staff> list) {
+    protected void save(ArrayList<Staff> list) {
         var jsonList = new JSONArray();
         for (Staff newsMessage : list) {
             try {
@@ -42,7 +43,8 @@ public class UsersProcessor extends Processor {
         }
     }
 
-    private ArrayList<Staff> transform() {
+    @Override
+    protected ArrayList<Staff> transform() {
         try {
             JSONObject obj = read();
             JSONArray staffList = (JSONArray) obj.get("data");
@@ -53,6 +55,7 @@ public class UsersProcessor extends Processor {
         }
     }
 
+    @Override
     public ArrayList<Staff> get() {
         return transform();
     }
@@ -67,6 +70,7 @@ public class UsersProcessor extends Processor {
         return null;
     }
 
+    @Override
     public void post(Staff staff) {
         var list = transform();
         list.add(staff);

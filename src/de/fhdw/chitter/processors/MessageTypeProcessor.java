@@ -9,14 +9,15 @@ import org.json.simple.JSONObject;
 import de.fhdw.chitter.processors.abstracts.Processor;
 import de.fhdw.chitter.utils.jsonparser.StringListParser;
 
-public class MessageTypeProcessor extends Processor {
+public final class MessageTypeProcessor extends Processor<String> {
     private static MessageTypeProcessor instance;
 
     private MessageTypeProcessor() {
         super("data/messageTypes.json");
     }
 
-    private void save(ArrayList<String> list) {
+    @Override
+    protected void save(ArrayList<String> list) {
         var array = StringListParser.convertToJsonArray(list);
         var obj = (JSONObject) StringListParser.getDefault(array);
         try {
@@ -26,7 +27,7 @@ public class MessageTypeProcessor extends Processor {
         }
     }
 
-    private ArrayList<String> transform() {
+    protected ArrayList<String> transform() {
         try {
             JSONObject obj = read();
             JSONArray types = (JSONArray) obj.get("data");
@@ -44,8 +45,16 @@ public class MessageTypeProcessor extends Processor {
         return instance;
     }
 
+    @Override
     public ArrayList<String> get() {
         return transform();
+    }
+
+    @Override
+    public void post(String type) {
+        var list = transform();
+        list.add(type);
+        save(list);
     }
 
     public void post(ArrayList<String> types) {
