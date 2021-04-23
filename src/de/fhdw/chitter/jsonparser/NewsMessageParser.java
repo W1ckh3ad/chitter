@@ -1,17 +1,17 @@
-package de.fhdw.chitter.utils.jsonparser;
+package de.fhdw.chitter.jsonparser;
 
 import java.util.ArrayList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import de.fhdw.chitter.jsonparser.abstracts.ComplexModelParser;
 import de.fhdw.chitter.models.NewsMessage;
-import de.fhdw.chitter.utils.jsonparser.abstracts.Parser;
 
 @SuppressWarnings("unchecked")
-public class NewsMessageParser extends Parser {
+public class NewsMessageParser extends ComplexModelParser<NewsMessage> {
 
-    public static JSONObject convertToJsonObject(NewsMessage model) {
+    public JSONObject convertToJsonObject(NewsMessage model) {
         var obj = new JSONObject();
         var topics = new JSONArray();
 
@@ -27,7 +27,8 @@ public class NewsMessageParser extends Parser {
         return obj;
     }
 
-    public static NewsMessage convertFromJsonObject(JSONObject obj) {
+    @Override
+    public NewsMessage convertFromJsonObject(JSONObject obj) {
         JSONArray jsonTopics = (JSONArray) obj.get("topics");
         ArrayList<String> topics = new ArrayList<>();
         for (Object object : jsonTopics) {
@@ -41,7 +42,8 @@ public class NewsMessageParser extends Parser {
         return new NewsMessage(date, author, topics, headline, text);
     }
 
-    public static JSONArray convertListToJsonArray(ArrayList<NewsMessage> list) {
+    @Override
+    public JSONArray convertListToJsonArray(ArrayList<NewsMessage> list) {
         var ret = new JSONArray();
         for (NewsMessage message : list) {
             ret.add(convertToJsonObject(message));
@@ -49,10 +51,11 @@ public class NewsMessageParser extends Parser {
         return ret;
     }
 
-    public static ArrayList<NewsMessage> convertJsonObjectToList(JSONArray array) {
+    @Override
+    public ArrayList<NewsMessage> convertJsonArrayToList(JSONArray array) {
         var ret = new ArrayList<NewsMessage>();
         for (Object message : array) {
-            ret.add(NewsMessageParser.convertFromJsonObject((JSONObject) message));
+            ret.add(convertFromJsonObject((JSONObject) message));
         }
         return ret;
     }

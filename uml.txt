@@ -211,27 +211,31 @@ class SignUpGUI extends JFrame implements ActionListener {
 + SignUpGUI();
 + ActionPerformed(ActionEvent arg0)
 }
-StaffGUI --> UserService
+SignUpGUI--> UserService
 
 
-abstract class Processor{
+abstract class Processor<T>{
 #String path
+# {static} MyFileHandler fileHandler
+# Parser<T> parser;
 + Processor(String path)
 # JSONObject read();
 # void create();
+# void save(ArrayList<T> list);
+# ArrayList<T> transform()
++ ArrayList<T> get();
++ void post(T elem);
 }
+Processor --> Parser
 
 class MessagesProcessor extends Processor{
 - {static} MessageProcessor instance;
 + {static} MessagesProcessor getInstance();
 - MessagesProcessor();
-- ArrayList<NewsMessage> transform();
-- void save();
-+ ArrayList<NewsMessage> get();
 + ArrayList<NewsMessage> get(String topic, int count, boolean caseSensitive);
 + ArrayList<NewsMessage> get(String topic, int count);
++ ArrayList<NewsMessage> get(String[] topic, int count);
 + ArrayList<NewsMessage> get(int count);
-+ void post(NewsMessage message);
 }
 MessagesProcessor --> NewsMessageParser
 MessagesProcessor --> NewsMessage
@@ -240,9 +244,6 @@ class MessageTypeProcessor extends Processor {
 - {static} MessageTypeProcessor instance;
 + {static} MessageTypeProcessor getInstance();
 - MessageTypeProcessor ();
-- ArrayList<String> transform();
-- void save();
-+ ArrayList<String> get();
 + void post(ArrayList<String> types);
 }
 MessageTypeProcessor --> StringListParser
@@ -251,11 +252,7 @@ class UsersProcessor extends Processor {
 - {static}  UsersProcessor instance;
 + {static} UsersProcessor getInstance();
 - UsersProcessor ();
-- ArrayList<Staff> transform();
-- void save();
-+ ArrayList<String> get();
 + ArrayList<String> get(String username);
-+ void post(Staff staff);
 }
 
 UsersProcessor  --> Staff
@@ -264,6 +261,8 @@ UsersProcessor  --> StaffParser
 class ChitterController {
 -MessagesProcessor messagesProcessor = MessagesProcessor.getInstance();
     -MessageTypeProcessor messageTypeProcessor
+- StringListParser stringListParser
+    -NewsMessageParser newsMessageParser
     +String index() 
     +String index(String topic)
     +String topics()
@@ -327,38 +326,46 @@ WebSocketConnectionService --> NewsMessage
 WebSocketConnectionService --> MessagesProcessor
 WebSocketConnectionService  --> MyMessageFormatter
 
-abstract class Parser {
-    +{static} JSONObject getDefault()
-    +{static} JSONObject getDefault(JSONArray array)
+abstract class Parser<T> {
+    + JSONObject getDefault()
+    + JSONObject getDefault(JSONArray array)
++JSONObject getDefault(ArrayList<T> list)
++abstract ArrayList<T> convertJsonArrayToList(JSONArray array)
++abstract JSONArray convertListToJsonArray(ArrayList<T> list)
 }
 
-class NewsMessageParser extends Parser {
+abstract class ComplexModelParser<T> extends Parser {
++abstract JSONObject convertToJsonObject(T model)
++ abstract T convertFromJsonObject(JSONObject object)
+}
 
-    +{static} JSONObject convertToJsonObject(NewsMessage model) 
+class NewsMessageParser extends ComplexModelParser {
 
-    +{static} NewsMessage convertFromJsonObject(JSONObject obj)
+    + JSONObject convertToJsonObject(NewsMessage model) 
 
-    +{static} JSONArray convertListToJsonArray(ArrayList<NewsMessage> list) 
+    + NewsMessage convertFromJsonObject(JSONObject obj)
 
-    +{static} ArrayList<NewsMessage> convertJsonObjectToList(JSONArray array) 
+    + JSONArray convertListToJsonArray(ArrayList<NewsMessage> list) 
+
+    + ArrayList<NewsMessage> convertJsonArrayToList(JSONArray array) 
 }
 NewsMessageParser --> NewsMessage
 
-class StaffParser extends Parser {
-    +{static} JSONArray converListToJsonArray(ArrayList<Staff> list) 
+class StaffParser extends ComplexModelParser {
+    + JSONArray convertListToJsonArray(ArrayList<Staff> list) 
 
-    +{static} ArrayList<Staff> convertJsonObjectToList(JSONArray array)
+    + ArrayList<Staff> convertJsonArrayToList(JSONArray array)
 
-    +{static} JSONObject convertToJsonObject(Staff model) 
+    + JSONObject convertToJsonObject(Staff model) 
 
-    +{static} Staff convertFromJsonObject(JSONObject obj) 
+    + Staff convertFromJsonObject(JSONObject obj) 
 
 }
 NewsMessageParser --> Staff
 class StringListParser extends Parser {
-    +{static} JSONArray convertToJsonArray(ArrayList<String> list)
+    + JSONArray convertListToJsonArray(ArrayList<String> list)
 
-    +{static} ArrayList<String> convertFromJsonObject(JSONArray array) 
+    + ArrayList<String> convertJsonArrayToList(JSONArray array) 
 }
 
 class MyFileHandler {

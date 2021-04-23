@@ -4,16 +4,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import de.fhdw.chitter.jsonparser.abstracts.Parser;
 import de.fhdw.chitter.utils.MyFileHandler;
-import de.fhdw.chitter.utils.jsonparser.abstracts.Parser;
 
 public abstract class Processor<T> {
     protected String path;
     protected static MyFileHandler fileHandler = new MyFileHandler();
+    protected Parser<T> parser;
 
     public Processor(String path) {
         this.path = path;
@@ -35,16 +37,39 @@ public abstract class Processor<T> {
 
     protected void create() throws ParseException, FileNotFoundException, IOException {
         fileHandler.createFile(path);
-        var obj = Parser.getDefault().toJSONString();
+        var obj = parser.getDefault().toJSONString();
         fileHandler.writeToFile(path, obj);
     }
 
-    protected abstract ArrayList<T> transform();
+    protected void save(ArrayList<T> list) {
+        var array = parser.convertListToJsonArray(list);
+        var obj = (JSONObject) parser.getDefault(array);
+        try {
+            fileHandler.writeToFile(path, obj.toJSONString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-    protected abstract void save(ArrayList<T> list);
+    protected ArrayList<T> transform() {
+        try {
+            JSONObject obj = read();
+            JSONArray list = (JSONArray) obj.get("data");
+            return parser.convertJsonArrayToList(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<T>();
+        }
+    }
 
-    public abstract ArrayList<T> get();
+    public ArrayList<T> get() {
+        return transform();
+    }
 
-    public abstract void post(T elem);
+    public void post(T elem) {
+        var list = transform();
+        list.add(elem);
+        save(list);
+    }
 
 }

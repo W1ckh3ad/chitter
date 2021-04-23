@@ -29,7 +29,7 @@ public class StaffGUI extends JFrame implements ActionListener {
 	private JTextArea txtText;
 	private JTextField txtStaff;
 	private JTextField txtPassword;
-	
+
 	private JButton btnSend;
 	private JButton btnLogin;
 
@@ -58,7 +58,7 @@ public class StaffGUI extends JFrame implements ActionListener {
 		topPanel.add(txtStaff);
 		topPanel.add(new JLabel("Passwort:"));
 		txtPassword = new JPasswordField(10);
-		
+
 		topPanel.add(txtPassword);
 		btnLogin = new javax.swing.JButton("Login");
 		btnLogin.addActionListener(new ActionListener() {
@@ -171,7 +171,12 @@ public class StaffGUI extends JFrame implements ActionListener {
 		String date = sdf_message.format(System.currentTimeMillis());
 
 		try {
-			NewsMessage newsMessage = new NewsMessage(date, staff, topicStr.split(","), headline, text);
+			var topicsWithSpace = topicStr.split(",");
+			var topicsWithoutSpace = new String[topicsWithSpace.length];
+			for (int i = 0; i < topicsWithSpace.length; i++) {
+				topicsWithoutSpace[i] = topicsWithSpace[i].trim();
+			}
+			NewsMessage newsMessage = new NewsMessage(date, staff, topicsWithoutSpace, headline, text);
 
 			TopicService.post(newsMessage.getAllTopics());
 			messagesProcessor.post(newsMessage);

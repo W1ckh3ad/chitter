@@ -1,13 +1,12 @@
 package de.fhdw.chitter.processors;
 
-import de.fhdw.chitter.utils.jsonparser.NewsMessageParser;
+import de.fhdw.chitter.jsonparser.NewsMessageParser;
 import de.fhdw.chitter.models.NewsMessage;
 import de.fhdw.chitter.processors.abstracts.Processor;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public final class MessagesProcessor extends Processor<NewsMessage> {
@@ -16,6 +15,7 @@ public final class MessagesProcessor extends Processor<NewsMessage> {
 
     private MessagesProcessor() {
         super("data/messages.json");
+        parser = new NewsMessageParser();
     }
 
     public static MessagesProcessor getInstance() {
@@ -26,20 +26,9 @@ public final class MessagesProcessor extends Processor<NewsMessage> {
     }
 
     @Override
-    protected ArrayList<NewsMessage> transform() {
-        try {
-            JSONArray messages = (JSONArray) read().get("data");
-            return NewsMessageParser.convertJsonObjectToList(messages);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<NewsMessage>();
-        }
-    }
-
-    @Override
     protected void save(ArrayList<NewsMessage> list) {
-        var jsonList = NewsMessageParser.convertListToJsonArray(list);
-        var obj = (JSONObject) NewsMessageParser.getDefault(jsonList);
+        var jsonList = parser.convertListToJsonArray(list);
+        var obj = (JSONObject) parser.getDefault(jsonList);
         try {
             fileHandler.writeToFile(path, obj.toJSONString());
         } catch (IOException e) {
@@ -94,6 +83,26 @@ public final class MessagesProcessor extends Processor<NewsMessage> {
         return get(topic, count, false);
     }
 
+    public ArrayList<NewsMessage> get(String[] topics, int count) {
+        var ret = new ArrayList<NewsMessage>();
+        var list = transform();
+        for (int i = list.size() - 1; i >= 0; i--) {
+            if (count <= 0) {
+                break;
+            }
+            var message = list.get(i);
+            var messageTopics = message.getAllTopics();
+            for (String string : topics) {
+                if (messageTopics.contains(string)) {
+                    count--;
+                    ret.add(message);
+                    break;
+                }
+            }
+        }
+        return ret;
+    }
+
     public ArrayList<NewsMessage> get(int count) {
         var list = transform();
         var ret = new ArrayList<NewsMessage>();
@@ -108,9 +117,4 @@ public final class MessagesProcessor extends Processor<NewsMessage> {
         return ret;
     }
 
-    public void post(NewsMessage message) {
-        var list = transform();
-        list.add(message);
-        save(list);
-    }
 }

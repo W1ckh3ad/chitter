@@ -80,9 +80,14 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		String[] topics = txtTopic.getText().split(",");
+		var topicsWithPossibleSpace = txtTopic.getText().split(",");
+		var topicsWithoutSpace = new String[topicsWithPossibleSpace.length];
+		for (int i = 0; i < topicsWithoutSpace.length; i++) {
+			topicsWithoutSpace[i] = topicsWithPossibleSpace[i].trim();
+		}
 
-		for (String topic : topics) {
+		for (String topic : topicsWithoutSpace) {
+
 			if (arg0.getSource() == btnRegister) {
 				this.registerTopic(topic);
 			}
@@ -91,23 +96,25 @@ public class ReceiverGUI extends JFrame implements ActionListener, Receiver {
 				this.unregisterTopic(topic);
 			}
 		}
+		if (arg0.getSource() == btnRegister) {
+			try {
+				var messages = messagesProcessor.get(topicsWithoutSpace, 5);
+				for (NewsMessage newsMessage : messages) {
+					if (newsMessage != null) {
+						txtText.append("#########################\n");
+						txtText.append(MyMessageFormatter.toString(newsMessage));
+					}
+				}
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	private void registerTopic(String topic) {
 		newssystem.register(topic, this);
 		txtText.append("Topic " + topic.toString() + " wurde registriert\n");
-		try {
-			var messages = messagesProcessor.get(topic, 5);
-			for (NewsMessage newsMessage : messages) {
-				if (newsMessage != null) {
-					txtText.append("#########################\n");
-					txtText.append(MyMessageFormatter.toString(newsMessage));
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	private void unregisterTopic(String topic) {
