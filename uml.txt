@@ -155,7 +155,7 @@ AdminGUI --> ReceiverGUI
 AdminGUI --> StaffGUI
 AdminGUI --> SignUpGUI
 
-class ReceiverGUI extends JFrame implements ActionListener{
+class ReceiverGUI extends JFrame implements ActionListener, Receiver{
 -JTextField txtTopic
 -JButton btnRegister
 -JTextArea txtText
@@ -306,7 +306,7 @@ TopicService --> MessageTypeProcessor
     -{static} boolean validateCharsWithMinMax(String string, String chars, Integer min, Integer max) 
 }
 
-UserService --o UserProcessor
+UserService --o UsersProcessor
 UserService --> CharacterVal
 UserService --> Staff
 UserService -->UserConfigParser
@@ -389,6 +389,7 @@ class MyMessageFormatter {
     +{static} String toString(NewsMessage message)
 }
 MyMessageFormatter --> NewsMessage
+MyMessageFormatter --> MyMarkDownParser 
 
 class TopicExtractor {
 
