@@ -19,9 +19,9 @@
 
 ##### Path /api/chitter
 
-  - Path /api/chitter/topics
+  ##### Path /api/chitter/topics
     - JSON Object mit allen Topics
-  - Path /api/chitter/{topic}
+  ##### Path /api/chitter/{topic}
     - JSON Object mit den letzen fünf Nachrichten der Topic
 
 ### Beispielbenutzer
