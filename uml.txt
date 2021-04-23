@@ -33,8 +33,8 @@ interface WebSocketHandler{
 
 class WebSocketServer implements WebSocketHandler {
   -Nettosphere server
-- WebSocketConnectionService connections;
-- WebSocketReceiver receiver;
+- WebSocketConnectionService connections
+- WebSocketReceiver receiver
 +WebSocketServer()
   +void start()
   +void onByteMessage(WebSocket webSocket, byte[] data, int offset, int length) throws IOException
@@ -50,8 +50,8 @@ WebSocketServer --o WebSocketReceiver
 Newssystem --o Receiver
 
 class Newssystem {
--Map<String, Set<Receiver>> receivers;
--MessageTypeProcessor messageTypeProcessor;
+-Map<String, Set<Receiver>> receivers
+-MessageTypeProcessor messageTypeProcessor
 -Newssystem()
 
 -{static} Newssystem instance
@@ -95,7 +95,7 @@ void receiveMessage(NewsMessage newsMessage)
 }
 
 class ConsoleReceiver implements Receiver {
-+ void receiveMessage(NewsMessage newsMessage);
++ void receiveMessage(NewsMessage newsMessage)
 }
 ConsoleReceiver --> NewsMessage
 class WebSocketReceiver implements Receiver {
@@ -118,10 +118,10 @@ class Staff{
 }
 
 class CharacterVal {
--String name;
--Integer min;
--Integer max;
--String characters;
+-String name
+-Integer min
+-Integer max
+-String characters
 
     + String getName() 
 
@@ -135,8 +135,8 @@ class CharacterVal {
 }
 
 class UserConfig {
--Integer maxUsers;
-    -ArrayList<CharacterVal> rules;
+-Integer maxUsers
+    -ArrayList<CharacterVal> rules
 
     +int getMaxUsers()
 
@@ -196,19 +196,19 @@ StaffGUI --> Newssystem
 StaffGUI --> UserService
 
 class SignUpGUI extends JFrame implements ActionListener {
-   -JTextField txtNewUsername;
-    -JTextField txtNewPassword;
-    -JTextField txtNewPasswordConfirm;
-    -JTextField txtStaff;
-    -JTextField txtPassword;
+   -JTextField txtNewUsername
+    -JTextField txtNewPassword
+    -JTextField txtNewPasswordConfirm
+    -JTextField txtStaff
+    -JTextField txtPassword
 
-    -JButton btnLogin;
-    -JButton btnSignUp;
+    -JButton btnLogin
+    -JButton btnSignUp
 
-    -JLabel lblUsermsg;
+    -JLabel lblUsermsg
 
-    -boolean isLoggedin = false;
-+ SignUpGUI();
+    -boolean isLoggedin = false
++ SignUpGUI()
 + ActionPerformed(ActionEvent arg0)
 }
 SignUpGUI--> UserService
@@ -217,71 +217,82 @@ SignUpGUI--> UserService
 abstract class Processor<T>{
 #String path
 # {static} MyFileHandler fileHandler
-# Parser<T> parser;
+# Parser<T> parser
 + Processor(String path)
-# JSONObject read();
-# void create();
-# void save(ArrayList<T> list);
+# JSONObject read()
+# void create()
+# void save(ArrayList<T> list)
 # ArrayList<T> transform()
-+ ArrayList<T> get();
-+ void post(T elem);
++ ArrayList<T> get()
++ void post(T elem)
 }
 Processor --> Parser
+Processor --o MyFileHandler
 
 class MessagesProcessor extends Processor{
-- {static} MessageProcessor instance;
-+ {static} MessagesProcessor getInstance();
-- MessagesProcessor();
-+ ArrayList<NewsMessage> get(String topic, int count, boolean caseSensitive);
-+ ArrayList<NewsMessage> get(String topic, int count);
-+ ArrayList<NewsMessage> get(String[] topic, int count);
-+ ArrayList<NewsMessage> get(int count);
+- {static} MessageProcessor instance
++ {static} MessagesProcessor getInstance()
+- MessagesProcessor()
++ ArrayList<NewsMessage> get(String topic, int count, boolean caseSensitive)
++ ArrayList<NewsMessage> get(String topic, int count)
++ ArrayList<NewsMessage> get(String[] topic, int count)
++ ArrayList<NewsMessage> get(int count)
 }
 MessagesProcessor --> NewsMessageParser
 MessagesProcessor --> NewsMessage
 
 class MessageTypeProcessor extends Processor {
-- {static} MessageTypeProcessor instance;
-+ {static} MessageTypeProcessor getInstance();
-- MessageTypeProcessor ();
-+ void post(ArrayList<String> types);
+- {static} MessageTypeProcessor instance
++ {static} MessageTypeProcessor getInstance()
+- MessageTypeProcessor ()
++ void post(ArrayList<String> types)
 }
 MessageTypeProcessor --> StringListParser
 
 class UsersProcessor extends Processor {
-- {static}  UsersProcessor instance;
-+ {static} UsersProcessor getInstance();
-- UsersProcessor ();
-+ ArrayList<String> get(String username);
+- {static}  UsersProcessor instance
++ {static} UsersProcessor getInstance()
+- UsersProcessor ()
++ ArrayList<String> get(String username)
 }
 
 UsersProcessor  --> Staff
 UsersProcessor  --> StaffParser
 
 class ChitterController {
--MessagesProcessor messagesProcessor = MessagesProcessor.getInstance();
+-AtmosphereResource resource
+-MessagesProcessor messagesProcessor = MessagesProcessor.getInstance()
     -MessageTypeProcessor messageTypeProcessor
 - StringListParser stringListParser
     -NewsMessageParser newsMessageParser
++ChitterController(AtmosphereResource r)
     +String index() 
     +String index(String topic)
     +String topics()
++ String error()
 }
 ChitterController --o MessagesProcessor
 ChitterController --o MessageTypeProcessor
 ChitterController --> NewsMessageParser
 ChitterController --> StringListParser
 
+class HomeController {
+    - MyFileHandler fileHandler = new MyFileHandler()
++ String index()
++ String error()
+}
+
+HomeController--o MyFileHandler
+
 class RoutingService {
--AtmosphereResource resource;
-    - MyFileHandler fileHandler = new MyFileHandler();
+-AtmosphereResource resource
     -String api404()
     +RoutingService(AtmosphereResource resource) 
     +String route()
 }
 
-RoutingService --o MyFileHandler
 RoutingService --> ChitterController
+RoutingService --> HomeController
 
 class TopicService {
 
@@ -312,7 +323,7 @@ UserService -->UserConfigParser
 
 class WebSocketConnectionService {
 
-    -ArrayList<WebSocket> connections;
+    -ArrayList<WebSocket> connections
 
     +WebSocketConnectionService()
 

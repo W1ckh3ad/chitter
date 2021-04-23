@@ -2,63 +2,47 @@ package de.fhdw.chitter.services;
 
 import org.atmosphere.cpr.AtmosphereResource;
 
+import de.fhdw.chitter.controller.HomeController;
 import de.fhdw.chitter.controller.api.ChitterController;
-import de.fhdw.chitter.utils.MyFileHandler;
 
 public class RoutingService {
+    private ChitterController chitterController;
+    private HomeController homeController;
     private AtmosphereResource resource;
-    private MyFileHandler fileHandler = new MyFileHandler();
-    private String api404() {
-        var response = resource.getResponse();
-        response.setStatus(404);
-        return "{'data': 'Die Ressource die Sie abgefragt haben ist nicht zu finden'}";
-    }
 
     public RoutingService(AtmosphereResource resource) {
+        chitterController = new ChitterController(resource);
+        homeController = new HomeController();
         this.resource = resource;
     }
 
     public String route() {
-
         var path = resource.getRequest().getPathInfo();
         String[] pathElems = path.split("/");
         if (pathElems.length == 0) {
-            var ret = "";
-            try {
-                ret = fileHandler.readFromFile("src/de/fhdw/chitter/views/newsticker.html");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return ret;
+            return new HomeController().index();
         }
         switch (pathElems[1]) {
-        case "api": {
-            switch (pathElems[2]) {
-            case "chitter":
-                var controller = new ChitterController();
-                if (pathElems.length > 3) {
-                    switch (pathElems[3]) {
-                    case "topics":
-                        return controller.topics();
-                    default:
-                        return controller.index(pathElems[3]);
+            case "api": {
+                switch (pathElems[2]) {
+                case "chitter":
+                    if (pathElems.length > 3) {
+                        switch (pathElems[3]) {
+                        case "topics":
+                            return chitterController.topics();
+                        default:
+                            return chitterController.index(pathElems[3]);
+                        }
+                    } else {
+                        return chitterController.index();
                     }
-                } else {
-                    return controller.index();
+                default:
+                    return chitterController.error();
                 }
-            default:
-                return api404();
             }
-        }
-        default: {
-            var ret = "";
-            try {
-                ret = fileHandler.readFromFile("src/de/fhdw/chitter/views/newsticker.html");
-            } catch (Exception e) {
-                e.printStackTrace();
+            default: {
+                return homeController.error();
             }
-            return ret;
-        }
         }
     }
 }
